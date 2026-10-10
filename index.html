@@ -1,1653 +1,1109 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>天津市大学生化学竞赛 - 在线学习平台</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-color: #2563eb;
-            --secondary-color: #1e40af;
-            --success-color: #16a34a;
-            --warning-color: #ea580c;
-            --danger-color: #dc2626;
-            --light-bg: #f8fafc;
-            --border-color: #e2e8f0;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: var(--text-primary);
-        }
-
-        /* ======================== 通用组件 ======================== */
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .btn-secondary {
-            background: #64748b;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #475569;
-        }
-
-        .btn-success {
-            background: var(--success-color);
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--danger-color);
-            color: white;
-        }
-
-        .btn-small {
-            padding: 6px 12px;
-            font-size: 12px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: var(--shadow-md);
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-2px);
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 14px;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        .alert {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            display: none;
-        }
-
-        .alert.show {
-            display: block;
-        }
-
-        .alert-success {
-            background: #dcfce7;
-            color: #166534;
-            border: 1px solid #86efac;
-        }
-
-        .alert-danger {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fca5a5;
-        }
-
-        .alert-info {
-            background: #dbeafe;
-            color: #1e40af;
-            border: 1px solid #93c5fd;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top: 3px solid white;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* ======================== 导航栏 ======================== */
-
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: var(--shadow-md);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .navbar-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar-brand {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .navbar-menu {
-            display: flex;
-            gap: 20px;
-            list-style: none;
-        }
-
-        .navbar-menu a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .navbar-menu a:hover,
-        .navbar-menu a.active {
-            color: var(--primary-color);
-        }
-
-        .navbar-right {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: white;
-            border-radius: 8px;
-            box-shadow: var(--shadow-lg);
-            min-width: 200px;
-            display: none;
-            z-index: 100;
-        }
-
-        .dropdown-menu.show {
-            display: block;
-        }
-
-        .dropdown-menu a,
-        .dropdown-menu button {
-            display: block;
-            width: 100%;
-            padding: 12px 16px;
-            border: none;
-            background: none;
-            text-align: left;
-            cursor: pointer;
-            color: var(--text-primary);
-            transition: background 0.3s;
-            font-size: 14px;
-        }
-
-        .dropdown-menu a:first-child,
-        .dropdown-menu button:first-child {
-            border-radius: 8px 8px 0 0;
-        }
-
-        .dropdown-menu a:last-child,
-        .dropdown-menu button:last-child {
-            border-radius: 0 0 8px 8px;
-        }
-
-        .dropdown-menu a:hover,
-        .dropdown-menu button:hover {
-            background: var(--light-bg);
-        }
-
-        /* ======================== 认证页面 ======================== */
-
-        .auth-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .auth-card {
-            background: white;
-            border-radius: 16px;
-            padding: 40px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .auth-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            text-align: center;
-        }
-
-        .auth-subtitle {
-            color: var(--text-secondary);
-            text-align: center;
-            margin-bottom: 32px;
-            font-size: 14px;
-        }
-
-        .auth-tabs {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 24px;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .auth-tab {
-            padding: 12px 16px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--text-secondary);
-            border-bottom: 3px solid transparent;
-            margin-bottom: -2px;
-            transition: all 0.3s;
-        }
-
-        .auth-tab.active {
-            color: var(--primary-color);
-            border-bottom-color: var(--primary-color);
-        }
-
-        .auth-form {
-            display: none;
-        }
-
-        .auth-form.show {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .auth-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .auth-link a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        /* ======================== 仪表板 ======================== */
-
-        .dashboard {
-            padding: 40px 0;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: var(--shadow-md);
-            transition: all 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .stat-icon {
-            font-size: 32px;
-            margin-bottom: 12px;
-        }
-
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .stat-unit {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-left: 4px;
-        }
-
-        /* ======================== 考试列表 ======================== */
-
-        .exam-list {
-            display: grid;
-            gap: 16px;
-        }
-
-        .exam-item {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--shadow-md);
-            transition: all 0.3s;
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .exam-item:hover {
-            box-shadow: var(--shadow-lg);
-        }
-
-        .exam-info h3 {
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
-
-        .exam-meta {
-            display: flex;
-            gap: 20px;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        .exam-meta span {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .exam-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        /* ======================== 答题界面 ======================== */
-
-        .exam-container {
-            background: white;
-            border-radius: 12px;
-            padding: 40px;
-            margin-bottom: 40px;
-            box-shadow: var(--shadow-md);
-        }
-
-        .exam-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .exam-title {
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        .exam-timer {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--warning-color);
-        }
-
-        .exam-timer.warn {
-            color: var(--danger-color);
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .question-card {
-            margin-bottom: 32px;
-            padding: 24px;
-            background: var(--light-bg);
-            border-radius: 12px;
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .question-card.answered {
-            border-left-color: var(--success-color);
-            background: #f0fdf4;
-        }
-
-        .question-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
-        }
-
-        .question-number {
-            font-weight: 700;
-            font-size: 16px;
-            color: var(--primary-color);
-        }
-
-        .question-points {
-            background: var(--primary-color);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .question-text {
-            font-size: 16px;
-            margin-bottom: 16px;
-            line-height: 1.6;
-        }
-
-        .question-image {
-            max-width: 100%;
-            margin: 16px 0;
-            border-radius: 8px;
-        }
-
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .option {
-            padding: 12px 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: white;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .option input[type="radio"],
-        .option input[type="checkbox"] {
-            cursor: pointer;
-        }
-
-        .option:hover {
-            border-color: var(--primary-color);
-            background: rgba(37, 99, 235, 0.05);
-        }
-
-        .option.selected {
-            border-color: var(--primary-color);
-            background: rgba(37, 99, 235, 0.1);
-        }
-
-        .option.correct {
-            border-color: var(--success-color);
-            background: rgba(22, 163, 74, 0.1);
-        }
-
-        .option.incorrect {
-            border-color: var(--danger-color);
-            background: rgba(220, 38, 38, 0.1);
-        }
-
-        /* ======================== 涂卡界面 ======================== */
-
-        .omr-container {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 40px;
-        }
-
-        .omr-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .omr-question {
-            text-align: center;
-        }
-
-        .omr-label {
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-            display: block;
-        }
-
-        .omr-options {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-        }
-
-        .omr-bubble {
-            width: 40px;
-            height: 40px;
-            border: 2px solid var(--border-color);
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            transition: all 0.3s;
-            background: white;
-        }
-
-        .omr-bubble:hover {
-            border-color: var(--primary-color);
-            transform: scale(1.1);
-        }
-
-        .omr-bubble.selected {
-            background: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-
-        /* ======================== 错题库 ======================== */
-
-        .wrong-questions-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .wrong-item {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            border-left: 4px solid var(--danger-color);
-            box-shadow: var(--shadow-md);
-        }
-
-        .wrong-item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-
-        .wrong-item-title {
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .wrong-count {
-            background: var(--danger-color);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .wrong-reason {
-            color: var(--text-secondary);
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
-
-        .wrong-notes {
-            background: var(--light-bg);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            line-height: 1.6;
-            margin-bottom: 12px;
-        }
-
-        /* ======================== 教师面板 ======================== */
-
-        .teacher-panel {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-
-        .teacher-menu {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-        }
-
-        .teacher-menu-item {
-            padding: 16px;
-            border-bottom: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .teacher-menu-item:hover {
-            background: var(--light-bg);
-        }
-
-        .teacher-menu-item.active {
-            background: var(--primary-color);
-            color: white;
-            border-left: 4px solid var(--secondary-color);
-        }
-
-        .teacher-content {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: var(--shadow-md);
-        }
-
-        .upload-zone {
-            border: 2px dashed var(--primary-color);
-            border-radius: 8px;
-            padding: 40px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: rgba(37, 99, 235, 0.05);
-        }
-
-        .upload-zone:hover {
-            background: rgba(37, 99, 235, 0.1);
-            border-color: var(--secondary-color);
-        }
-
-        .upload-zone.dragover {
-            background: rgba(37, 99, 235, 0.2);
-            border-color: var(--secondary-color);
-        }
-
-        /* ======================== 成绩表格 ======================== */
-
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-        }
-
-        th {
-            background: var(--light-bg);
-            padding: 16px;
-            text-align: left;
-            font-weight: 600;
-            color: var(--text-primary);
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        td {
-            padding: 16px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        tr:hover {
-            background: rgba(37, 99, 235, 0.02);
-        }
-
-        /* ======================== 进度条 ======================== */
-
-        .progress {
-            height: 24px;
-            background: var(--border-color);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
-            font-weight: 600;
-            transition: width 0.3s ease;
-        }
-
-        /* ======================== 模态框 ======================== */
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 12px;
-            padding: 32px;
-            max-width: 600px;
-            width: 90%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .modal-title {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .modal-close {
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--text-secondary);
-            background: none;
-            border: none;
-            transition: color 0.3s;
-        }
-
-        .modal-close:hover {
-            color: var(--text-primary);
-        }
-
-        .modal-footer {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            margin-top: 24px;
-        }
-
-        /* ======================== 响应式设计 ======================== */
-
-        @media (max-width: 768px) {
-            .exam-container {
-                padding: 20px;
-            }
-
-            .navbar-menu {
-                display: none;
-            }
-
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .omr-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .teacher-panel {
-                grid-template-columns: 1fr;
-            }
-
-            .exam-header {
-                flex-direction: column;
-                gap: 16px;
-            }
-
-            .auth-card {
-                padding: 24px;
-            }
-
-            table {
-                font-size: 12px;
-            }
-
-            td, th {
-                padding: 8px;
-            }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>化竞刷题 · 天津市大学生化学竞赛理论知识个人赛</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{--ink:#101828;--sub:#5a6b85;--line:#e3e8f3;--bg:#f2f5fb;--card:#fff;--brand:#3b4fd8;--brand2:#6b7cf5;--accent:#12a594;--red:#d64550;--green:#0f9d76;--dark:#151b3d;--sh:0 8px 26px rgba(24,35,80,.07)}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{border:0;cursor:pointer;border-radius:10px;padding:10px 16px;background:var(--brand);color:#fff;font-weight:600;transition:.16s}
+button:hover:not(:disabled){filter:brightness(1.06)}
+button:disabled{opacity:.42;cursor:not-allowed}
+button.ghost{background:#eef1fa;color:var(--brand)}
+button.line{background:#fff;border:1px solid var(--line);color:var(--brand)}
+button.warn{background:#fff2f2;color:var(--red);border:1px solid #f3c9cd}
+button.ok{background:var(--accent)}
+button.sm{padding:6px 11px;font-size:12px;border-radius:8px}
+.app{display:grid;grid-template-columns:238px 1fr;min-height:100vh}
+.side{background:linear-gradient(178deg,#151b3d 0%,#232f63 52%,#17475a 100%);color:#fff;padding:22px 14px 26px;display:flex;flex-direction:column;gap:22px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo b{font-size:23px;letter-spacing:1.5px;display:block}
+.logo span{font-size:10px;letter-spacing:1.8px;color:#8fa3d6;display:block;margin-top:5px}
+.menu{display:grid;gap:5px}
+.menu button{background:transparent;color:#c3cdea;text-align:left;font-weight:500;padding:11px 13px;border-radius:10px;font-size:14px;display:flex;gap:10px;align-items:center}
+.menu button:hover{background:#ffffff14;color:#fff}
+.menu button.on{background:#ffffff22;color:#fff;font-weight:700;box-shadow:inset 3px 0 0 var(--accent)}
+.side-foot{margin-top:auto;font-size:11px;color:#8b9cc4;line-height:1.9;padding:0 9px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#5ee6c0;margin-right:6px}
+.dot.bad{background:#ff7d8a}
+.main{min-width:0;display:flex;flex-direction:column}
+.top{height:70px;background:#ffffffea;backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(14px,3.5vw,36px);position:sticky;top:0;z-index:6}
+.top h1{font-size:19px;margin:0}
+.top .crumb{font-size:11px;color:var(--accent);font-weight:700;letter-spacing:1.4px}
+.who{display:flex;align-items:center;gap:10px}
+.avatar{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;display:grid;place-items:center;font-weight:800;font-size:14px}
+.uname{font-size:13px;font-weight:600}
+.urole{font-size:10px;color:var(--sub)}
+.wrap{max-width:1460px;width:100%;margin:0 auto;padding:22px clamp(12px,3vw,34px) 40px;flex:1}
+.view{display:none}.view.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:20px;box-shadow:var(--sh);margin-bottom:16px}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.hd h2{font-size:18px;margin:0}.hd h3{font-size:15px;margin:0}
+.muted{color:var(--sub);font-size:13px;line-height:1.75}
+.tiny{font-size:11px;color:#8794ac}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.f{display:grid;gap:6px;margin:9px 0;min-width:0}
+.f>span,.f>label{font-size:12px;color:var(--sub);font-weight:600}
+input,select,textarea{width:100%;min-width:0;padding:10px 12px;border:1px solid #d5dded;border-radius:9px;background:#fff;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--brand2);box-shadow:0 0 0 3px #3b4fd815}
+textarea{resize:vertical;font-family:inherit}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;background:#e8f7f3;color:#0b7a6d;white-space:nowrap}
+.pill.gray{background:#eef1f8;color:#5c6b85}.pill.blue{background:#e9edfd;color:#3948b8}
+.pill.gold{background:#fdf5e2;color:#95661a}.pill.red{background:#fdeced;color:#a8343e}
+.note{border-radius:10px;padding:11px 14px;font-size:12.5px;line-height:1.8;background:#fff8e8;border:1px solid #f0e0b6;color:#7c5b1a;margin:9px 0}
+.note.err{background:#fff1f2;border-color:#f2c8cd;color:#a2323e}
+.note.ok{background:#e9f9f3;border-color:#bde8d9;color:#0a6b5d}
+.msg{font-size:12px;line-height:1.7;margin-top:7px;color:var(--sub);min-height:0}
+.msg.err{color:var(--red)}.msg.ok{color:var(--green)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 17px;box-shadow:var(--sh)}
+.stat label{font-size:11.5px;color:var(--sub);font-weight:600}
+.stat b{display:block;font-size:26px;margin:6px 0 2px}
+.stat i{font-size:11px;color:var(--accent);font-style:normal}
+.plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:13px}
+.pitem{background:#fff;border:1px solid var(--line);border-radius:14px;padding:17px;box-shadow:var(--sh);transition:.18s;display:flex;flex-direction:column}
+.pitem:hover{transform:translateY(-3px);border-color:#c9d3f0}
+.pitem h3{margin:0 0 6px;font-size:15px;line-height:1.5}
+.pitem .meta{font-size:11.5px;color:var(--sub);line-height:1.8;flex:1}
+.pitem .acts{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
+.ribbon{display:inline-block;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;margin-bottom:8px}
+.qhead{position:sticky;top:70px;z-index:5;background:#fff;border-bottom:1px solid var(--line);padding:13px 20px;border-radius:14px 14px 0 0;margin:-20px -20px 16px}
+.qwrap{max-width:880px;margin:0 auto}
+.qbox{margin-bottom:20px;padding-bottom:18px;border-bottom:1px dashed var(--line)}
+.qstem{font-size:15px;line-height:1.85;margin:8px 0 14px;white-space:pre-wrap}
+.qno{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--brand);color:#fff;font-size:12px;font-weight:700;margin-right:8px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border:1px solid var(--line);border-radius:10px;cursor:pointer;background:#fff;transition:.14s;font-size:14px;line-height:1.65}
+.opt:hover{border-color:#b9c6ee;background:#fafbff}
+.opt.sel{border-color:var(--brand);background:#eef1fe}
+.opt.right{border-color:var(--green);background:#e8f9f3}
+.opt.wrong{border-color:var(--red);background:#fff1f2}
+.opt b{flex:0 0 22px;height:22px;border-radius:6px;background:#eef1f8;color:#4d5f7d;display:grid;place-items:center;font-size:11px;font-weight:800}
+.opt.sel b{background:var(--brand);color:#fff}
+.opt.right b{background:var(--green);color:#fff}
+.opt.wrong b{background:var(--red);color:#fff}
+.sheet{background:#fff;border:2px solid #2c3a66;border-radius:12px;padding:16px;font-family:"Courier New",monospace}
+.sheet-hd{border-bottom:2px solid #2c3a66;padding-bottom:9px;margin-bottom:13px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px}
+.sheet-hd b{font-size:15px;letter-spacing:1px}
+.sheet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(126px,1fr));gap:11px 16px}
+.bub{display:flex;align-items:center;gap:7px;font-size:12px}
+.bub>em{font-style:normal;font-weight:700;width:26px;text-align:right;color:#2c3a66;font-size:13px}
+.bub .bts{display:flex;gap:5px}
+.bt{width:21px;height:21px;border-radius:50%;border:1.5px solid #93a1c4;display:grid;place-items:center;font-size:10px;font-weight:700;color:#7c89a8;cursor:pointer;background:#fff;transition:.1s;user-select:none}
+.bt:hover{border-color:var(--brand);color:var(--brand)}
+.bt.on{background:#1b2450;border-color:#1b2450;color:#fff}
+.result-hero{background:linear-gradient(125deg,#151b3d,#25327a 60%,#0e6c62);color:#fff;border-radius:18px;padding:26px 30px;display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.result-hero .sc{font-size:56px;font-weight:800;letter-spacing:-2px;line-height:1}
+.result-hero .sc small{font-size:19px;opacity:.7;font-weight:600}
+.tw{overflow:auto;border:1px solid var(--line);border-radius:12px;margin:11px 0}
+table{border-collapse:collapse;width:100%;font-size:12.5px;background:#fff}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:#f6f8fd;color:#556684;font-weight:700;font-size:11.5px;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#fafbff}
+tr.bad{background:#fff3f4}
+.empty{padding:26px;text-align:center;color:#8794ac;font-size:13px;border:1px dashed #ccd6e6;border-radius:12px;background:#fbfcfe}
+.lrow{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 13px;border:1px solid var(--line);border-radius:11px;background:#fff;margin-bottom:8px}
+.lrow .lm{min-width:0;flex:1}
+.lrow .lm b{display:block;font-size:13.5px;overflow-wrap:anywhere}
+.lrow .lm small{display:block;font-size:11px;color:var(--sub);line-height:1.7;margin-top:3px;overflow-wrap:anywhere}
+.lrow .la{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.bar{height:6px;background:#e7ecf7;border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--accent));transition:.25s}
+.timer{font-variant-numeric:tabular-nums;font-weight:800;color:var(--brand);font-size:22px}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.tabs button{background:#eef1f8;color:#5c6b85;font-weight:600;padding:8px 14px;font-size:13px}
+.tabs button.on{background:var(--dark);color:#fff}
+.toast{position:fixed;right:20px;bottom:20px;max-width:min(420px,calc(100vw - 30px));padding:13px 17px;border-radius:12px;color:#fff;background:#1b2450;box-shadow:0 14px 40px #0003;font-size:13px;line-height:1.6;z-index:99;display:none}
+.toast.show{display:block}
+.toast.err{background:#9c2e3a}.toast.ok{background:#0a7a68}
+.burger{display:none}
+@media(max-width:1080px){.grid4,.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.app{display:block}.side{position:fixed;inset:0 auto 0 0;width:250px;max-width:84vw;z-index:30;transform:translateX(-100%);transition:.24s;height:100vh}.side.open{transform:none;box-shadow:12px 0 34px #0004}.burger{display:inline-flex}.top{height:62px;padding:0 12px}.top h1{font-size:16px}.wrap{padding:14px 11px 34px}.grid3,.grid2,.grid4{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr);gap:8px}.stat{padding:12px}.stat b{font-size:20px}.lrow{flex-direction:column;align-items:flex-start}.qhead{top:62px}}
+</style>
 </head>
 <body>
-    <!-- 导航栏 -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-content">
-                <div class="navbar-brand">
-                    🧪 化学竞赛平台
-                </div>
-                <ul class="navbar-menu" id="navMenu">
-                    <li><a href="#" data-page="dashboard" class="nav-link active">仪表板</a></li>
-                    <li><a href="#" data-page="exams" class="nav-link">练习考试</a></li>
-                    <li><a href="#" data-page="wrong-questions" class="nav-link">错题库</a></li>
-                    <li id="teacherNav" style="display: none;">
-                        <a href="#" data-page="teacher" class="nav-link">教师管理</a>
-                    </li>
-                </ul>
-                <div class="navbar-right">
-                    <div style="position: relative;">
-                        <div class="user-avatar" id="userAvatar">U</div>
-                        <div class="dropdown-menu" id="userMenu">
-                            <a href="#" data-action="profile">个人资料</a>
-                            <a href="#" data-action="settings">设置</a>
-                            <button data-action="logout">退出登录</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="app">
+  <aside class="side" id="side">
+    <div class="logo"><b>化竞刷题</b><span>TIANJIN · CHEMISTRY</span></div>
+    <nav class="menu" id="menu">
+      <button class="on" data-v="home">⌂ 学习台</button>
+      <button data-v="papers">▤ 试卷库</button>
+      <button data-v="records">◈ 我的成绩</button>
+      <button data-v="bank">⌸ 题库管理</button>
+      <button data-v="users">☰ 账号管理</button>
+      <button data-v="profile">⚙ 个人设置</button>
     </nav>
-
-    <!-- 主容器 -->
-    <div class="container" id="mainContent">
-        <!-- 认证页面 -->
-        <div id="authPage" class="auth-container" style="display: none;">
-            <div class="auth-card">
-                <h2 class="auth-title">化学竞赛平台</h2>
-                <p class="auth-subtitle">专业的在线学习助手</p>
-
-                <div class="auth-tabs">
-                    <button class="auth-tab active" data-tab="login">登录</button>
-                    <button class="auth-tab" data-tab="register">注册</button>
-                </div>
-
-                <div class="alert alert-info" id="authAlert"></div>
-
-                <!-- 登录表单 -->
-                <form class="auth-form show" id="loginForm">
-                    <div class="form-group">
-                        <label>邮箱</label>
-                        <input type="email" id="loginEmail" placeholder="example@email.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label>密码</label>
-                        <input type="password" id="loginPassword" placeholder="输入密码" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">
-                        <span id="loginSpinner"></span>
-                        登录
-                    </button>
-                </form>
-
-                <!-- 注册表单 -->
-                <form class="auth-form" id="registerForm">
-                    <div class="form-group">
-                        <label>用户名</label>
-                        <input type="text" id="regUsername" placeholder="输入用户名" required>
-                    </div>
-                    <div class="form-group">
-                        <label>邮箱</label>
-                        <input type="email" id="regEmail" placeholder="example@email.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label>密码</label>
-                        <input type="password" id="regPassword" placeholder="至少8个字符" required>
-                    </div>
-                    <div class="form-group">
-                        <label>身份</label>
-                        <select id="regRole">
-                            <option value="student">学生</option>
-                            <option value="teacher">教师</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">
-                        创建账户
-                    </button>
-                </form>
-            </div>
+    <div class="side-foot"><span id="cloudState"><span class="dot"></span>检查中</span><br>天津市大学生化学竞赛<br>理论知识个人赛 · 刷题平台</div>
+  </aside>
+  <div class="main">
+    <header class="top">
+      <div class="row">
+        <button class="ghost burger" id="burger">☰</button>
+        <div><div class="crumb" id="crumb">DASHBOARD</div><h1 id="pageName">学习台</h1></div>
+      </div>
+      <div class="who">
+        <div style="text-align:right"><div class="uname" id="uName">访客</div><div class="urole" id="uRole">未登录</div></div>
+        <div class="avatar" id="uAvatar">游</div>
+        <button class="ghost sm" id="authBtn">登录</button>
+      </div>
+    </header>
+    <main class="wrap">
+      <section class="view on" id="v-home">
+        <div class="stats">
+          <div class="stat"><label>累计作答</label><b id="sTotal">—</b><i>道题</i></div>
+          <div class="stat"><label>总正确率</label><b id="sAcc">—</b><i>%</i></div>
+          <div class="stat"><label>完成试卷</label><b id="sPapers">—</b><i>套</i></div>
+          <div class="stat"><label>最高得分率</label><b id="sBest">—</b><i>%</i></div>
         </div>
+        <div class="card"><div class="hd"><h2>开始刷题</h2><span class="muted" id="paperCount">—</span></div><div class="plist" id="homePapers"><div class="empty">加载中…</div></div></div>
+        <div class="card"><div class="hd"><h2>最近记录</h2><button class="line sm" data-go="records">全部 →</button></div><div id="homeRecent"><div class="empty">暂无记录。</div></div></div>
+      </section>
 
-        <!-- 仪表板页面 -->
-        <div id="dashboardPage" style="display: none;">
-            <div style="margin-bottom: 40px; margin-top: 40px;">
-                <h1 style="color: white; font-size: 32px; margin-bottom: 8px;">欢迎回来，<span id="userName">用户</span></h1>
-                <p style="color: rgba(255,255,255,0.8);">继续你的学习之旅</p>
-            </div>
-
-            <div class="dashboard-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">📊</div>
-                    <div class="stat-label">总做题数</div>
-                    <div class="stat-value"><span id="totalAttempts">0</span><span class="stat-unit">次</span></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">✓</div>
-                    <div class="stat-label">正确率</div>
-                    <div class="stat-value"><span id="accuracy">0</span><span class="stat-unit">%</span></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">🔥</div>
-                    <div class="stat-label">连续正确</div>
-                    <div class="stat-value"><span id="streak">0</span><span class="stat-unit">个</span></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">⏱️</div>
-                    <div class="stat-label">学习时长</div>
-                    <div class="stat-value"><span id="studyHours">0</span><span class="stat-unit">小时</span></div>
-                </div>
-            </div>
-
-            <div style="background: white; border-radius: 12px; padding: 24px; margin-top: 40px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                <h2 style="margin-bottom: 24px;">📚 最近考试</h2>
-                <div id="recentExams" class="exam-list">
-                    <p style="color: var(--text-secondary);">正在加载...</p>
-                </div>
-            </div>
+      <section class="view" id="v-papers">
+        <div class="card">
+          <div class="hd"><h2>试卷库</h2><button class="line sm" id="reloadPapers">刷新</button></div>
+          <div class="grid3">
+            <label class="f"><span>年份</span><select id="fYear"><option value="">全部年份</option></select></label>
+            <label class="f"><span>关键词</span><input id="fKey" placeholder="搜索试卷名称"></label>
+            <label class="f"><span>排序</span><select id="fSort"><option value="year_desc">从新到旧</option><option value="year_asc">从旧到新</option></select></label>
+          </div>
+          <div class="plist" id="paperList" style="margin-top:14px"><div class="empty">加载中…</div></div>
         </div>
+      </section>
 
-        <!-- 考试列表页面 -->
-        <div id="examsPage" style="display: none; padding: 40px 0;">
-            <h1 style="color: white; margin-bottom: 32px;">📚 练习考试</h1>
-            <div id="examsList" class="exam-list">
-                <p style="color: white;">正在加载考试列表...</p>
+      <section class="view" id="v-exam">
+        <div class="card" style="padding-top:0">
+          <div class="qhead">
+            <div class="row" style="justify-content:space-between;width:100%">
+              <div style="min-width:0"><div class="tiny" id="exTitle">试卷</div>
+                <div class="row" style="margin-top:5px"><span class="pill blue" id="exMode">逐题模式</span><span class="pill gray" id="exProg">0 / 0</span></div></div>
+              <div class="row"><div style="text-align:right"><div class="tiny">用时</div><div class="timer" id="exTimer">00:00</div></div>
+                <button class="line sm" id="toggleSheet">涂卡模式</button>
+                <button class="warn sm" id="quitExam">退出</button></div>
             </div>
+            <div class="bar" style="margin-top:10px"><i id="exBar"></i></div>
+          </div>
+          <div id="exBody" class="qwrap"></div>
+          <div class="row" style="justify-content:center;margin-top:20px">
+            <button class="ghost" id="prevQ">← 上一题</button>
+            <button class="ghost" id="nextQ">下一题 →</button>
+            <button id="submitExam" style="padding:11px 30px">交卷批改</button>
+          </div>
         </div>
+      </section>
 
-        <!-- 答题页面 -->
-        <div id="practiceContainer" style="display: none;">
-            <!-- 将在JavaScript中动态生成 -->
+      <section class="view" id="v-result">
+        <div class="card" style="padding:0;overflow:hidden"><div class="result-hero" id="resHero"></div></div>
+        <div class="card"><div class="hd"><h2>逐题解析</h2><button class="line sm" data-go="records">返回</button></div><div id="resBody"></div></div>
+      </section>
+
+      <section class="view" id="v-records">
+        <div class="stats">
+          <div class="stat"><label>作答次数</label><b id="rCount">—</b><i>次</i></div>
+          <div class="stat"><label>平均得分率</label><b id="rAvg">—</b><i>%</i></div>
+          <div class="stat"><label>最好成绩</label><b id="rBest">—</b><i>分</i></div>
+          <div class="stat"><label>累计答题</label><b id="rQ">—</b><i>道</i></div>
         </div>
+        <div class="card"><div class="hd"><h2>历史记录</h2>
+          <div class="row"><button class="line sm" id="exportRecords">导出 Excel</button><button class="line sm" id="reloadRecords">刷新</button></div></div>
+          <div id="recordList"><div class="empty">登录后查看。</div></div></div>
+      </section>
 
-        <!-- 错题库页面 -->
-        <div id="wrongQuestionsPage" style="display: none; padding: 40px 0;">
-            <h1 style="color: white; margin-bottom: 32px;">📌 我的错题库</h1>
-            <div id="wrongQuestionsList" class="wrong-questions-list">
-                <p style="color: white;">正在加载错题...</p>
+      <section class="view" id="v-bank">
+        <div id="bankDeny" class="note err" style="display:none">当前账号没有教师/管理员权限。请让管理员在「账号管理」里授予 teacher 角色。</div>
+        <div id="bankBody" style="display:none">
+          <div class="card">
+            <div class="hd"><h2>题库概览</h2><button class="line sm" id="reloadBank">刷新</button></div>
+            <div class="row" style="margin-bottom:12px">
+              <button class="ok" id="seedBtn">一键载入内置题库（2015/2017/2023/2024/2025）</button>
+              <button class="ghost" id="newPaperBtn">+ 新建空白试卷</button>
             </div>
-        </div>
-
-        <!-- 教师管理页面 -->
-        <div id="teacherPage" style="display: none; padding: 40px 0;">
-            <h1 style="color: white; margin-bottom: 32px;">👨‍🏫 教师管理面板</h1>
-            
-            <div class="teacher-panel">
-                <div class="teacher-menu">
-                    <div class="teacher-menu-item active" data-panel="import">📥 导入试题</div>
-                    <div class="teacher-menu-item" data-panel="manage">🎯 管理试题</div>
-                    <div class="teacher-menu-item" data-panel="grading">✓ 批改阅卷</div>
-                    <div class="teacher-menu-item" data-panel="statistics">📊 成绩统计</div>
-                </div>
-
-                <div class="teacher-content">
-                    <!-- 导入试题面板 -->
-                    <div id="importPanel" class="panel-content">
-                        <h3 style="margin-bottom: 20px;">导入试题</h3>
-                        <div class="upload-zone" id="uploadZone">
-                            <div style="font-size: 48px; margin-bottom: 12px;">📤</div>
-                            <p style="margin-bottom: 8px; font-weight: 600;">拖拽Excel/CSV文件到这里</p>
-                            <p style="color: var(--text-secondary); font-size: 13px;">或点击选择文件</p>
-                            <input type="file" id="fileInput" style="display: none;" accept=".xlsx,.csv,.xls">
-                        </div>
-                        <div id="importProgress" style="margin-top: 20px; display: none;">
-                            <p style="margin-bottom: 12px;">导入进度</p>
-                            <div class="progress">
-                                <div class="progress-bar" id="importProgressBar" style="width: 0%;">0%</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 管理试题面板 -->
-                    <div id="managePanel" class="panel-content" style="display: none;">
-                        <h3 style="margin-bottom: 20px;">管理试题</h3>
-                        <div style="margin-bottom: 20px;">
-                            <input type="text" placeholder="搜索试题..." class="form-group" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
-                        </div>
-                        <div id="questionsList"></div>
-                    </div>
-
-                    <!-- 批改面板 -->
-                    <div id="gradingPanel" class="panel-content" style="display: none;">
-                        <h3 style="margin-bottom: 20px;">待批改的答卷</h3>
-                        <div class="table-responsive">
-                            <table id="gradingTable">
-                                <thead>
-                                    <tr>
-                                        <th>学生</th>
-                                        <th>考试</th>
-                                        <th>提交时间</th>
-                                        <th>状态</th>
-                                        <th>操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="gradingTableBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- 统计面板 -->
-                    <div id="statisticsPanel" class="panel-content" style="display: none;">
-                        <h3 style="margin-bottom: 20px;">成绩统计</h3>
-                        <div style="background: var(--light-bg); padding: 16px; border-radius: 8px; margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">选择考试</label>
-                            <select id="examSelector" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
-                                <option>-- 选择考试 --</option>
-                            </select>
-                        </div>
-                        <div class="table-responsive">
-                            <table id="statsTable">
-                                <thead>
-                                    <tr>
-                                        <th>排名</th>
-                                        <th>学生</th>
-                                        <th>得分</th>
-                                        <th>正确率</th>
-                                        <th>用时</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="statsTableBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+            <div id="bankList"><div class="empty">加载中…</div></div>
+          </div>
+          <div class="card">
+            <div class="hd"><h3>批量导入试题</h3></div>
+            <div class="note">
+              支持 <b>.xlsx / .xls / .csv</b>。表头（中英文均可）：
+              <code>题型</code>、<code>题干</code>、<code>A</code>~<code>E</code>、<code>答案</code>、<code>分值</code>、<code>解析</code>、<code>模块</code>。
+              <br>· 单选：题型写 <b>单选/single</b>，答案写字母（C）或索引（2）
+              <br>· 多选：<b>多选/multi</b>，答案写 <b>BD</b> 或 <b>1,3</b>
+              <br>· 判断：<b>判断/judge</b>，答案写 <b>对/错/√/×/T/F</b>
+              <br>· 填空：<b>填空/blank</b>，多个可接受答案用 <b>|</b> 分隔
             </div>
-        </div>
-    </div>
-
-    <!-- 模态框：查看解析 -->
-    <div class="modal" id="solutionModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">题目解析</h2>
-                <button class="modal-close" data-action="close">&times;</button>
+            <div class="grid3">
+              <label class="f"><span>导入到试卷</span><select id="impPaper"></select></label>
+              <label class="f"><span>选择文件</span><input type="file" id="impFile" accept=".xlsx,.xls,.csv"></label>
+              <label class="f"><span>操作</span><div class="row"><button class="ghost" id="tplBtn">下载模板</button><button id="impBtn">解析并导入</button></div></label>
             </div>
-            <div id="solutionContent"></div>
+            <div class="msg" id="impMsg"></div>
+            <div id="impPreview"></div>
+          </div>
+          <div class="card">
+            <div class="hd"><h3>试题浏览 / 编辑</h3>
+              <div class="row"><button class="line sm" id="expPaperBtn">导出该卷 Excel</button><button class="line sm" id="loadQsBtn">加载题目</button></div></div>
+            <label class="f"><span>选择试卷</span><select id="qPaper"></select></label>
+            <div id="qList"></div>
+          </div>
+          <div class="card"><div class="hd"><h3>成绩总览（教师）</h3><button class="line sm" id="reloadTeacherRecords">刷新</button></div><div id="teacherRecords"><div class="empty">选择试卷后加载。</div></div></div>
         </div>
-    </div>
+      </section>
 
-    <!-- Supabase客户端库 -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+      <section class="view" id="v-users">
+        <div id="userDeny" class="note err" style="display:none">
+          当前账号不是管理员。如果这是<b>全新部署</b>且还没有任何管理员，可以点下方按钮把自己设为第一位管理员。
+          <div style="margin-top:10px"><button id="bootstrapBtn">成为首位管理员</button></div>
+        </div>
+        <div id="userBody" style="display:none">
+          <div class="card">
+            <div class="hd"><h2>账号列表</h2><button class="line sm" id="reloadUsers">刷新</button></div>
+            <div class="grid3">
+              <label class="f"><span>搜索邮箱/昵称</span><input id="uSearch" placeholder="关键字"></label>
+              <label class="f"><span>角色筛选</span><select id="uRoleF"><option value="">全部</option><option value="student">学生</option><option value="teacher">教师</option><option value="admin">管理员</option></select></label>
+              <label class="f"><span>操作</span><button class="ghost" id="doSearch">应用筛选</button></label>
+            </div>
+            <div class="tw"><table><thead><tr><th>账号</th><th>昵称</th><th>角色</th><th>注册</th><th>最近登录</th><th>操作</th></tr></thead><tbody id="userTbody"><tr><td colspan="6">加载中…</td></tr></tbody></table></div>
+          </div>
+          <div class="card">
+            <div class="hd"><h3>平台设置</h3></div>
+            <div class="grid2">
+              <label class="f"><span>注册策略</span><select id="regMode"><option value="open">允许公开注册</option><option value="roster_only">仅名单邮箱可注册</option></select></label>
+              <label class="f"><span>允许注册的邮箱域名（留空=不限）</span><input id="regDomains" placeholder="example.com, tju.edu.cn"></label>
+            </div>
+            <button id="saveSettings">保存设置</button><div class="msg" id="setMsg"></div>
+          </div>
+          <div class="card"><div class="hd"><h3>审计日志</h3><button class="line sm" id="reloadAudit">刷新</button></div><div id="auditList"><div class="empty">暂无。</div></div></div>
+        </div>
+      </section>
 
-    <script>
-        // ============================================================================
-        // 核心配置
-        // ============================================================================
+      <section class="view" id="v-profile">
+        <div class="card" style="max-width:640px;margin:0 auto">
+          <div class="hd"><h2>个人资料</h2></div>
+          <label class="f"><span>昵称</span><input id="pName" maxlength="40"></label>
+          <div class="grid2"><label class="f"><span>学号</span><input id="pNo" maxlength="30"></label><label class="f"><span>班级</span><input id="pClass" maxlength="60"></label></div>
+          <label class="f"><span>学校</span><input id="pSchool" maxlength="80"></label>
+          <button id="saveProfile">保存资料</button><div class="msg" id="profMsg"></div>
+        </div>
+        <div class="card" style="max-width:640px;margin:16px auto 0">
+          <div class="hd"><h2>账号安全</h2></div>
+          <div class="muted" id="accEmail">—</div>
+          <div class="row" style="margin-top:12px"><button class="ghost" id="sendResetBtn">发送重置密码邮件</button><button class="warn" id="signOutBtn">退出登录</button></div>
+          <div class="msg" id="secMsg"></div>
+        </div>
+        <div class="card" style="max-width:640px;margin:16px auto 0">
+          <div class="hd"><h2>数据导出</h2></div>
+          <p class="muted">导出本人全部答题记录。</p>
+          <button class="ghost" id="expMine">导出我的成绩 Excel</button><div class="msg" id="expMsg"></div>
+        </div>
+      </section>
 
-        const SUPABASE_URL = 'https://qobxbdlwfoyzwokjcdpy.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvYnhiZGx3Zm95endva2pjZHB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1ODYzNjYsImV4cCI6MjEwNzE2MjM2Nn0._Sfo8seOCZ0AMHZig0GSsUVTZoQA60t4MK9JY9ukQBw';
+      <section class="view" id="v-auth">
+        <div class="card" style="max-width:520px;margin:20px auto">
+          <div class="hd"><h2 id="authTitle">登录</h2></div>
+          <div class="tabs" id="authTabs">
+            <button class="on" data-m="login">登录</button><button data-m="signup">注册</button><button data-m="magic">邮箱快捷登录</button><button data-m="reset">找回密码</button>
+          </div>
+          <div id="authForm"></div>
+          <div class="msg" id="authMsg"></div>
+          <div class="note" id="regNote">注册策略读取中…</div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+<script>
+/* =========================================================
+   关键修复：用 IIFE 包住整段脚本，避免与全局 supabase 冲突
+   ========================================================= */
+(function(){
+'use strict';
 
-        // 应用状态
-        let appState = {
-            currentUser: null,
-            currentPage: 'dashboard',
-            currentExam: null,
-            currentPractice: null,
-            authMode: 'login'
-        };
+const CFG = {
+  url: 'https://qobxbdlwfoyzwokjcdpy.supabase.co',
+  key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvYnhiZGx3Zm95endva2pjZHB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1ODYzNjYsImV4cCI6MjEwNzE2MjM2Nn0._Sfo8seOCZ0AMHZig0GSsUVTZoQA60t4MK9JY9ukQBw'
+};
 
-        // ============================================================================
-        // 认证管理
-        // ============================================================================
+// 注意：变量名叫 db，不叫 supabase，避免冲突
+const db = window.supabase ? window.supabase.createClient(CFG.url, CFG.key, {
+  auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:true }
+}) : null;
 
-        async function login(email, password) {
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email,
-                    password
-                });
-                
-                if (error) throw error;
-                
-                appState.currentUser = data.user;
-                await loadUserProfile();
-                showAlert('登录成功！', 'success');
-                showPage('dashboard');
-            } catch (error) {
-                showAlert(error.message, 'danger');
-            }
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const txt = v => String(v ?? '').trim();
+const fmt = v => { if(!v) return '—'; const d=new Date(v),p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`; };
+const dur = s => { s=Math.max(0,Math.floor(+s||0)); const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60,p=n=>String(n).padStart(2,'0'); return (h?p(h)+':':'')+p(m)+':'+p(x); };
+
+function toast(m,t=''){const e=$('toast');e.textContent=m;e.className='toast show '+t;clearTimeout(toast._t);toast._t=setTimeout(()=>e.classList.remove('show'),4200);}
+function msg(id,t,ty=''){const e=$(id);if(!e)return;e.textContent=t||'';e.className='msg '+ty;}
+function err(e){console.error(e);const m=e?.message||String(e||'操作失败');
+  if(/row-level security|permission denied|not authorized/i.test(m))return '权限不足：请检查账号角色。';
+  if(/Failed to fetch|NetworkError/i.test(m))return '网络连接失败。';
+  if(/relation .* does not exist/i.test(m))return '数据表不存在：请先执行 SQL 初始化脚本。';
+  if(/Invalid login credentials/i.test(m))return '邮箱或密码错误。';
+  if(/Email not confirmed/i.test(m))return '邮箱尚未验证。';
+  if(/already registered/i.test(m))return '该邮箱已注册。';
+  return m;}
+async function run(q){const{data,error}=await q;if(error)throw error;return data;}
+async function rpc(name,args={}){const{data,error}=await db.rpc(name,args);if(error)throw error;return data;}
+async function allRows(t,cols,c=q=>q,page=1000){let o=[],s=0;for(;;){const{data,error}=await c(db.from(t).select(cols)).range(s,s+page-1);if(error)throw error;const a=data||[];o.push(...a);if(a.length<page)break;s+=page;if(s>80000)throw new Error('数据量过大。');}return o;}
+function csvDown(file,head,rows){const e=v=>{const s=String(v??'');return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};const b=new Blob(['\ufeff'+[head,...rows].map(r=>r.map(e).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=file;a.click();setTimeout(()=>URL.revokeObjectURL(u),2000);}
+
+const S = { session:null, user:null, profile:null, roles:[], view:'home', papers:[], exam:null, settings:{mode:'open',domains:''} };
+const hasRole=(...r)=>r.some(x=>S.roles.includes(x));
+const isTeacher=()=>hasRole('teacher','admin');
+const isAdmin=()=>hasRole('admin');
+
+const VIEWS={home:'学习台',papers:'试卷库',exam:'答题中',result:'成绩详情',records:'我的成绩',bank:'题库管理',users:'账号管理',profile:'个人设置',auth:'登录 / 注册'};
+const CRUMB={home:'DASHBOARD',papers:'PAPER LIBRARY',exam:'EXAMINATION',result:'RESULT',records:'MY RECORDS',bank:'QUESTION BANK',users:'ACCOUNT CENTER',profile:'PROFILE',auth:'AUTH'};
+
+function go(v){
+  if(!VIEWS[v]) v='home';
+  S.view=v;
+  document.querySelectorAll('.view').forEach(e=>e.classList.toggle('on',e.id==='v-'+v));
+  document.querySelectorAll('#menu [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  $('pageName').textContent=VIEWS[v];$('crumb').textContent=CRUMB[v];
+  $('side').classList.remove('open');
+  window.scrollTo({top:0,behavior:'smooth'});
+  const L={home:loadHome,papers:loadPapers,records:loadRecords,bank:loadBank,users:loadUsers,profile:loadProfile,auth:()=>renderAuth('login')};
+  Promise.resolve(L[v]?.()).catch(e=>toast(err(e),'err'));
+}
+document.querySelectorAll('#menu [data-v]').forEach(b=>b.onclick=()=>go(b.dataset.v));
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+$('burger').onclick=()=>$('side').classList.toggle('open');
+
+/* ---------- 认证 ---------- */
+function redirectUrl(){let u=location.origin+location.pathname;if(location.protocol==='file:')u='https://example.com/';return u.replace(/index\.html$/,'');}
+function updateHeader(){
+  const name=S.profile?.display_name||S.user?.email||'访客';
+  $('uName').textContent=S.session?name:'访客';
+  $('uRole').textContent=S.session?(S.roles.map(r=>({student:'学生',teacher:'教师',admin:'管理员'}[r]||r)).join(' · ')||'未分配角色'):'未登录';
+  $('uAvatar').textContent=name.slice(0,1).toUpperCase();
+  $('authBtn').textContent=S.session?'退出':'登录';
+}
+$('authBtn').onclick=async()=>{
+  if(!S.session) return go('auth');
+  if(!confirm('确定退出？'))return;
+  const{error}=await db.auth.signOut();
+  if(error)return toast(err(error),'err');
+  toast('已退出。','ok');go('home');
+};
+async function refreshIdentity(){
+  if(!S.session){S.user=null;S.profile=null;S.roles=[];updateHeader();return;}
+  S.user=S.session.user;
+  const[p,r]=await Promise.all([
+    db.from('profiles').select('id,display_name,student_no,class_name,school').eq('id',S.user.id).maybeSingle(),
+    db.from('user_roles').select('role').eq('user_id',S.user.id)
+  ]);
+  if(p.error&&p.error.code!=='PGRST116')throw p.error;
+  if(r.error)throw r.error;
+  S.profile=p.data||{display_name:S.user.email};
+  S.roles=(r.data||[]).map(x=>x.role);
+  if(!S.roles.length)S.roles=['student'];
+  updateHeader();
+}
+async function loadSettings(){
+  try{const d=await rpc('chem_get_settings');S.settings={mode:d?.registration_mode||'open',domains:d?.allowed_domains||''};}
+  catch(e){S.settings={mode:'open',domains:''};}
+  $('regNote').textContent=S.settings.mode==='roster_only'?'当前注册策略：仅允许名单邮箱注册。':
+    (S.settings.domains?`当前注册策略：公开注册，仅限以下域名 —— ${S.settings.domains}`:'当前注册策略：允许公开注册。');
+}
+let AUTH_MODE='login';
+document.querySelectorAll('#authTabs [data-m]').forEach(b=>b.onclick=()=>renderAuth(b.dataset.m));
+function renderAuth(mode){
+  AUTH_MODE=mode;
+  document.querySelectorAll('#authTabs [data-m]').forEach(b=>b.classList.toggle('on',b.dataset.m===mode));
+  $('authTitle').textContent=({login:'登录',signup:'注册新账号',magic:'邮箱快捷登录',reset:'重置密码'})[mode];
+  let h=`<label class="f"><span>邮箱 *</span><input id="aEmail" type="email" autocomplete="email" placeholder="name@example.com"></label>`;
+  if(mode==='signup')h+=`<label class="f"><span>昵称</span><input id="aName" maxlength="40" placeholder="例如：张三"></label>`;
+  if(mode==='login'||mode==='signup')h+=`<label class="f"><span>密码 *（至少 8 位）</span><input id="aPwd" type="password" minlength="8" autocomplete="${mode==='signup'?'new-password':'current-password'}"></label>`;
+  if(mode==='signup')h+=`<label class="f"><span>确认密码 *</span><input id="aPwd2" type="password" minlength="8"></label>`;
+  h+=`<button id="aSubmit" style="width:100%;margin-top:12px">${{login:'登录',signup:'注册',magic:'发送登录邮件',reset:'发送重置邮件'}[mode]}</button>`;
+  $('authForm').innerHTML=h;
+  $('aSubmit').onclick=()=>submitAuth(mode);
+  msg('authMsg','');
+}
+async function submitAuth(mode){
+  const btn=$('aSubmit');const old=btn.textContent;btn.disabled=true;btn.textContent='处理中…';
+  try{
+    const email=txt($('aEmail')?.value).toLowerCase();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw new Error('请输入有效邮箱。');
+    if(mode==='login'){
+      const{data,error}=await db.auth.signInWithPassword({email,password:$('aPwd').value});
+      if(error)throw error;
+      S.session=data.session;await refreshIdentity();toast('登录成功。','ok');go('home');return;
+    }
+    if(mode==='signup'){
+      const p=$('aPwd').value;
+      if(p.length<8)throw new Error('密码至少 8 位。');
+      if(p!==$('aPwd2').value)throw new Error('两次密码不一致。');
+      const{data,error}=await db.auth.signUp({email,password:p,options:{data:{display_name:txt($('aName')?.value)||email.split('@')[0]},emailRedirectTo:redirectUrl()}});
+      if(error)throw error;
+      if(data.session){S.session=data.session;await refreshIdentity();toast('注册成功，已登录。','ok');go('home');}
+      else{toast('注册成功，请查收邮箱确认链接。','ok');renderAuth('login');}
+      return;
+    }
+    if(mode==='magic'){
+      const{error}=await db.auth.signInWithOtp({email,options:{emailRedirectTo:redirectUrl(),shouldCreateUser:false}});
+      if(error)throw error;toast('如账号有效，登录邮件已发送。','ok');return;
+    }
+    if(mode==='reset'){
+      const{error}=await db.auth.resetPasswordForEmail(email,{redirectTo:redirectUrl()});
+      if(error)throw error;toast('如邮箱已注册，重置邮件已发送。','ok');
+    }
+  }catch(e){msg('authMsg',err(e),'err');toast(err(e),'err');}
+  finally{btn.disabled=false;btn.textContent=old;}
+}
+db?.auth.onAuthStateChange(async(evt,session)=>{
+  S.session=session;
+  try{await refreshIdentity();}catch(e){console.warn(e);}
+  if(evt==='PASSWORD_RECOVERY'){showRecoveryForm();}
+  if(['SIGNED_IN','SIGNED_OUT','USER_UPDATED'].includes(evt)){
+    updateHeader();
+    if(evt==='SIGNED_IN'&&S.view==='home')loadHome().catch(console.error);
+  }
+});
+function showRecoveryForm(){
+  go('auth');$('authTabs').style.display='none';$('authTitle').textContent='设置新密码';
+  $('authForm').innerHTML=`<label class="f"><span>新密码</span><input id="np1" type="password" minlength="8"></label><label class="f"><span>确认新密码</span><input id="np2" type="password" minlength="8"></label><button id="npBtn" style="width:100%">保存新密码</button>`;
+  $('npBtn').onclick=async()=>{
+    try{const p=$('np1').value;if(p.length<8||p!==$('np2').value)throw new Error('密码至少 8 位且两次一致。');
+      const{error}=await db.auth.updateUser({password:p});if(error)throw error;
+      await db.auth.signOut();toast('密码已更新，请重新登录。','ok');location.reload();
+    }catch(e){toast(err(e),'err');}
+  };
+}
+
+/* ---------- 学习台 ---------- */
+async function loadHome(){await loadPapers(true);await loadHomeStats();await loadHomeRecent();}
+async function loadHomeStats(){
+  if(!S.session){['sTotal','sAcc','sPapers','sBest'].forEach(i=>$(i).textContent='—');return;}
+  const atts=await allRows('attempts','id,paper_id,total_score,full_score,status',q=>q.eq('user_id',S.user.id));
+  const done=atts.filter(a=>a.status==='graded');
+  const ans=done.length?await allRows('answers','is_correct',q=>q.in('attempt_id',done.map(a=>a.id))):[];
+  const total=ans.length,correct=ans.filter(a=>a.is_correct===true).length;
+  const best=done.length?Math.max(...done.map(a=>Number(a.full_score)?Number(a.total_score)/Number(a.full_score)*100:0)):0;
+  $('sTotal').textContent=total;
+  $('sAcc').textContent=total?Math.round(correct/total*100):0;
+  $('sPapers').textContent=done.length;
+  $('sBest').textContent=done.length?Math.round(best):0;
+}
+async function loadHomeRecent(){
+  if(!S.session){$('homeRecent').innerHTML='<div class="empty">登录后查看作答记录。</div>';return;}
+  const rows=await run(db.from('attempts').select('id,paper_id,status,total_score,full_score,started_at,submitted_at').eq('user_id',S.user.id).order('started_at',{ascending:false}).limit(6));
+  if(!rows.length){$('homeRecent').innerHTML='<div class="empty">还没有作答记录。</div>';return;}
+  const map=new Map(S.papers.map(p=>[p.id,p]));
+  $('homeRecent').innerHTML=rows.map(a=>{
+    const p=map.get(a.paper_id);const rate=Number(a.full_score)?Math.round(Number(a.total_score)/Number(a.full_score)*100):0;
+    return `<div class="lrow"><div class="lm"><b>${esc(p?.title||'试卷')}</b><small>${fmt(a.submitted_at||a.started_at)} · ${a.status==='graded'?'已批改':'进行中'}</small></div>
+      <div class="la">${a.status==='graded'?`<span class="pill">${a.total_score}/${a.full_score} · ${rate}%</span>`:'<span class="pill gray">未提交</span>'}<button class="line sm" data-open-att="${a.id}">查看</button></div></div>`;
+  }).join('');
+  document.querySelectorAll('[data-open-att]').forEach(b=>b.onclick=()=>openResult(b.dataset.openAtt).catch(e=>toast(err(e),'err')));
+}
+
+/* ---------- 试卷库 ---------- */
+async function loadPapers(silent){
+  const rows=await allRows('papers','id,title,year,exam_type,description,status,duration_seconds,full_score,question_count,created_at',q=>q.eq('status','published').order('year',{ascending:false}));
+  S.papers=rows;
+  $('paperCount').textContent=rows.length?`${rows.length} 套已发布试卷`:'暂无已发布试卷';
+  const years=[...new Set(rows.map(r=>r.year).filter(Boolean))].sort((a,b)=>b-a);
+  const cur=$('fYear').value;
+  $('fYear').innerHTML='<option value="">全部年份</option>'+years.map(y=>`<option value="${y}">${y} 年</option>`).join('');
+  $('fYear').value=cur;
+  renderPaperList();
+  if(silent)renderHomePapers();
+}
+function renderHomePapers(){
+  const l=S.papers.slice(0,6);
+  $('homePapers').innerHTML=l.length?l.map(p=>card(p)).join(''):'<div class="empty">暂无试卷。教师可在题库管理中载入内置题库。</div>';
+  bindPB();
+}
+function card(p){
+  return `<div class="pitem"><span class="ribbon">${p.year||'—'} 年</span>
+    <h3>${esc(p.title)}</h3>
+    <div class="meta">${esc(p.exam_type||'天津化学竞赛个人赛')}<br>
+      满分 ${p.full_score??100} 分 · ${p.question_count||'—'} 题 ${p.duration_seconds?'· 限时 '+Math.round(p.duration_seconds/60)+' 分钟':'· 不限时'}<br>
+      ${esc(p.description||'')}</div>
+    <div class="acts"><button class="sm" data-start="${p.id}">开始答题</button><button class="line sm" data-sheet="${p.id}">仿真涂卡</button></div></div>`;
+}
+function renderPaperList(){
+  const y=$('fYear').value,k=txt($('fKey').value).toLowerCase(),s=$('fSort').value;
+  let l=S.papers.filter(p=>(!y||String(p.year)===y)&&(!k||p.title.toLowerCase().includes(k)));
+  l.sort((a,b)=>s==='year_asc'?(a.year||0)-(b.year||0):(b.year||0)-(a.year||0));
+  $('paperList').innerHTML=l.length?l.map(card).join(''):'<div class="empty">没有匹配的试卷。</div>';
+  bindPB();
+}
+$('fYear').onchange=renderPaperList;
+$('fKey').oninput=renderPaperList;
+$('fSort').onchange=renderPaperList;
+$('reloadPapers').onclick=()=>loadPapers().catch(e=>toast(err(e),'err'));
+function bindPB(){
+  document.querySelectorAll('[data-start]').forEach(b=>b.onclick=()=>startExam(b.dataset.start,false).catch(e=>toast(err(e),'err')));
+  document.querySelectorAll('[data-sheet]').forEach(b=>b.onclick=()=>startExam(b.dataset.sheet,true).catch(e=>toast(err(e),'err')));
+}
+
+/* ---------- 答题 ---------- */
+async function startExam(paperId,sheetMode){
+  if(!S.session){toast('请先登录。','err');return go('auth');}
+  if(S.exam&&!confirm('已有未提交答卷，确定重新开始？'))return;
+  const paper=S.papers.find(p=>p.id===paperId);
+  if(!paper)throw new Error('试卷不存在。');
+  const attemptId=await rpc('start_attempt',{p_paper_id:paperId});
+  const qs=await run(db.from('questions').select('id,section,question_type,stem,options,score,sort_order').eq('paper_id',paperId).order('sort_order'));
+  if(!qs.length)throw new Error('该试卷还没有题目。');
+  const saved=await run(db.from('answers').select('question_id,answer_value').eq('attempt_id',attemptId));
+  const answers={};saved.forEach(a=>{if(a.answer_value!==null&&a.answer_value!==undefined)answers[a.question_id]=a.answer_value;});
+  S.exam={paper,attemptId,questions:qs,answers,idx:0,sheet:!!sheetMode,startTs:Date.now(),timer:null};
+  $('exTitle').textContent=paper.title;
+  $('exMode').textContent=sheetMode?'仿真涂卡模式':'逐题模式';
+  $('toggleSheet').textContent=sheetMode?'逐题模式':'涂卡模式';
+  go('exam');renderExam();startTimer();
+  toast('已开始答题，答案会自动保存。','ok');
+}
+function startTimer(){
+  clearInterval(S.exam?.timer);
+  if(!S.exam)return;
+  const tick=()=>{
+    if(!S.exam)return;
+    const s=Math.floor((Date.now()-S.exam.startTs)/1000);
+    $('exTimer').textContent=dur(s);
+    const done=Object.keys(S.exam.answers).length;
+    $('exProg').textContent=`${done} / ${S.exam.questions.length} 已作答`;
+    $('exBar').style.width=(done/S.exam.questions.length*100)+'%';
+  };
+  tick();S.exam.timer=setInterval(tick,500);
+}
+function renderExam(){if(!S.exam)return;S.exam.sheet?renderSheet():renderQuestion();startTimer();}
+function renderQuestion(){
+  const e=S.exam,q=e.questions[e.idx],L='ABCDEFGH';
+  let h=`<div class="qbox"><div class="row" style="justify-content:space-between">
+    <div><span class="qno">${e.idx+1}</span><span class="pill blue">${q.section}</span><span class="pill gray">${q.score} 分</span></div>
+    <span class="tiny">${e.idx+1} / ${e.questions.length}</span></div>
+    <div class="qstem">${esc(q.stem)}</div>`;
+  const v=e.answers[q.id];
+  if(q.question_type==='blank'){
+    h+=`<textarea data-qid="${q.id}" rows="3" placeholder="输入答案…">${esc(v??'')}</textarea>`;
+  }else{
+    const o=Array.isArray(q.options)?q.options:[];
+    h+=`<div class="opts">`;
+    o.forEach((x,i)=>{
+      const sel=q.question_type==='multi'?(Array.isArray(v)&&v.includes(i)):v===i;
+      h+=`<label class="opt ${sel?'sel':''}" data-opt="${i}" data-qid="${q.id}"><b>${L[i]}</b><span>${esc(x)}</span></label>`;
+    });
+    h+=`</div>`;
+  }
+  h+=`</div>`;
+  $('exBody').innerHTML=h;bindQ();
+}
+function bindQ(){
+  const e=S.exam;
+  document.querySelectorAll('.opt').forEach(el=>el.onclick=()=>{
+    const qid=el.dataset.qid,i=Number(el.dataset.opt);
+    const q=e.questions.find(x=>x.id===qid);
+    if(q.question_type==='multi'){
+      let a=Array.isArray(e.answers[qid])?[...e.answers[qid]]:[];
+      if(a.includes(i))a=a.filter(x=>x!==i);else a.push(i);
+      a.sort((x,y)=>x-y);e.answers[qid]=a;
+    }else{e.answers[qid]=i;}
+    saveAns(qid,e.answers[qid]).catch(x=>toast(err(x),'err'));
+    renderQuestion();
+  });
+  const ta=$('exBody').querySelector('textarea[data-qid]');
+  if(ta)ta.oninput=()=>{
+    const qid=ta.dataset.qid;e.answers[qid]=ta.value;
+    clearTimeout(e._bt);e._bt=setTimeout(()=>saveAns(qid,ta.value).catch(x=>toast(err(x),'err')),700);
+  };
+}
+function renderSheet(){
+  const e=S.exam,L='ABCDEFGH';
+  let cells='';
+  e.questions.forEach((q,i)=>{
+    const v=e.answers[q.id];let bts='';
+    if(q.question_type==='blank'){
+      const f=v!==undefined&&v!==null&&String(v).trim()!=='';
+      bts=`<span class="bt ${f?'on':''}" style="border-radius:6px;width:auto;padding:0 7px;font-size:9px" data-jump="${i}">填</span>`;
+    }else{
+      const n=(q.options||[]).length||(q.question_type==='judge'?2:4);
+      for(let k=0;k<n;k++){
+        const on=q.question_type==='multi'?(Array.isArray(v)&&v.includes(k)):v===k;
+        bts+=`<span class="bt ${on?'on':''}" data-q="${i}" data-o="${k}">${L[k]}</span>`;
+      }
+    }
+    cells+=`<div class="bub"><em>${i+1}</em><div class="bts">${bts}</div></div>`;
+  });
+  $('exBody').innerHTML=`<div class="sheet"><div class="sheet-hd"><div><b>答题卡 · ANSWER SHEET</b><div class="tiny" style="color:#7c89a8">${esc(e.paper.title)}</div></div><div class="tiny" style="color:#7c89a8">点击填涂/取消 · 自动保存</div></div><div class="sheet-grid">${cells}</div></div>
+    <div class="row" style="justify-content:center;margin-top:16px"><button class="ghost" id="sheetToQ">切换逐题</button><button id="sheetSubmit">交卷批改</button></div>`;
+  document.querySelectorAll('.bt[data-q]').forEach(el=>el.onclick=()=>{
+    const qi=+el.dataset.q,oi=+el.dataset.o,q=e.questions[qi];
+    if(q.question_type==='multi'){
+      let a=Array.isArray(e.answers[q.id])?[...e.answers[q.id]]:[];
+      if(a.includes(oi))a=a.filter(x=>x!==oi);else a.push(oi);
+      a.sort((x,y)=>x-y);e.answers[q.id]=a;
+    }else{e.answers[q.id]=(e.answers[q.id]===oi)?null:oi;}
+    saveAns(q.id,e.answers[q.id]).catch(x=>toast(err(x),'err'));
+    renderSheet();
+  });
+  document.querySelectorAll('.bt[data-jump]').forEach(el=>el.onclick=()=>{e.sheet=false;$('toggleSheet').textContent='涂卡模式';e.idx=+el.dataset.jump;renderExam();});
+  $('sheetToQ')?.addEventListener('click',()=>{e.sheet=false;$('toggleSheet').textContent='涂卡模式';renderExam();});
+  $('sheetSubmit')?.addEventListener('click',()=>doSubmit());
+}
+async function saveAns(qid,value){
+  const e=S.exam;if(!e)return;
+  const v=(value===undefined||value===null||value===''||(Array.isArray(value)&&!value.length))?null:value;
+  await rpc('save_answer',{p_attempt_id:e.attemptId,p_question_id:qid,p_value:v});
+}
+$('prevQ').onclick=()=>{if(S.exam){S.exam.idx=Math.max(0,S.exam.idx-1);renderExam();}};
+$('nextQ').onclick=()=>{if(S.exam){S.exam.idx=Math.min(S.exam.questions.length-1,S.exam.idx+1);renderExam();}};
+$('toggleSheet').onclick=()=>{
+  if(!S.exam)return;
+  S.exam.sheet=!S.exam.sheet;
+  $('toggleSheet').textContent=S.exam.sheet?'逐题模式':'涂卡模式';
+  $('exMode').textContent=S.exam.sheet?'仿真涂卡模式':'逐题模式';
+  renderExam();
+};
+$('submitExam').onclick=()=>doSubmit();
+$('quitExam').onclick=()=>{
+  if(!S.exam)return go('papers');
+  if(!confirm('退出后本次进度会保留。确定退出？'))return;
+  clearInterval(S.exam.timer);S.exam=null;go('papers');
+};
+async function doSubmit(){
+  const e=S.exam;if(!e)return;
+  const done=Object.values(e.answers).filter(v=>v!==undefined&&v!==null&&v!==''&&!(Array.isArray(v)&&!v.length)).length;
+  if(!confirm(`已作答 ${done}/${e.questions.length} 题。确认交卷？`))return;
+  const b=$('submitExam');const old=b.textContent;b.disabled=true;b.textContent='批改中…';
+  try{
+    const r=await rpc('submit_attempt',{p_attempt_id:e.attemptId});
+    clearInterval(e.timer);
+    const rate=Number(r.full_score)?Math.round(Number(r.total_score)/Number(r.full_score)*100):0;
+    S.result={attemptId:e.attemptId,paper:e.paper,total:r.total_score,full:r.full_score,correct:r.correct_count,count:r.question_count,rate};
+    S.exam=null;go('result');renderResult();
+    toast(`交卷成功：${r.total_score}/${r.full_score}`,'ok');
+  }catch(x){toast(err(x),'err');}
+  finally{b.disabled=false;b.textContent=old;}
+}
+
+/* ---------- 结果 ---------- */
+async function renderResult(){
+  const r=S.result;if(!r)return go('records');
+  $('resHero').innerHTML=`<div style="min-width:220px"><div style="font-size:12px;color:#b6c4ea;letter-spacing:1.6px;font-weight:700">SCORE</div>
+    <div class="sc">${r.total}<small> / ${r.full}</small></div>
+    <div style="margin-top:8px;font-size:13px;color:#d7e2f7">${esc(r.paper.title)}</div></div>
+    <div style="flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px">
+      <div style="background:#ffffff1c;border-radius:9px;padding:10px 13px"><div style="font-size:11px;color:#b6c4ea">正确题数</div><div style="font-size:22px;font-weight:700">${r.correct} / ${r.count}</div></div>
+      <div style="background:#ffffff1c;border-radius:9px;padding:10px 13px"><div style="font-size:11px;color:#b6c4ea">得分率</div><div style="font-size:22px;font-weight:700">${r.rate}%</div></div>
+    </div>`;
+  const details=await rpc('get_attempt_details',{p_attempt_id:r.attemptId});
+  const L='ABCDEFGH';
+  $('resBody').innerHTML=details.map((d,i)=>{
+    const mine=d.answer_value,key=d.answer_key;
+    const mk=v=>Array.isArray(v)?v.map(x=>L[x]).join(''):(v===null||v===undefined?'':(typeof v==='number'?L[v]:String(v)));
+    const mineS=mk(mine),keyS=mk(key);
+    let opts='';
+    if(Array.isArray(d.options)&&d.options.length){
+      opts=`<div class="opts" style="margin-top:8px">`+d.options.map((o,j)=>{
+        const cls=d.is_correct===true?'right':(Array.isArray(key)&&key.includes(j))||key===j?'right':'';
+        const wrong=!d.is_correct&&((Array.isArray(mine)&&mine.includes(j))||mine===j)&&!((Array.isArray(key)&&key.includes(j))||key===j);
+        return `<div class="opt ${cls} ${wrong?'wrong':''}"><b>${L[j]}</b><span>${esc(o)}</span></div>`;
+      }).join('')+`</div>`;
+    }
+    return `<div class="qbox"><div class="row" style="justify-content:space-between">
+        <div><span class="qno">${i+1}</span><span class="pill blue">${d.section||'题目'}</span>
+          ${d.is_correct===true?'<span class="pill">✓ 正确</span>':'<span class="pill red">✗ 错误</span>'}</div>
+        <span class="pill gray">${d.score} 分</span></div>
+      <div class="qstem">${esc(d.stem)}</div>${opts}
+      <div class="note">你的答案：<b>${esc(mineS||'未作答')}</b> ｜ 正确答案：<b>${esc(keyS)}</b></div>
+      ${d.explanation?`<div class="note ok"><b>解析：</b>${esc(d.explanation)}</div>`:''}</div>`;
+  }).join('');
+}
+async function openResult(attemptId){
+  const a=await run(db.from('attempts').select('id,paper_id,status,total_score,full_score,correct_count,question_count').eq('id',attemptId).single());
+  const p=S.papers.find(x=>x.id===a.paper_id)||{title:'试卷'};
+  const rate=Number(a.full_score)?Math.round(Number(a.total_score)/Number(a.full_score)*100):0;
+  S.result={attemptId,paper:p,total:a.total_score,full:a.full_score,correct:a.correct_count,count:a.question_count,rate};
+  go('result');renderResult();
+}
+
+/* ---------- 我的成绩 ---------- */
+async function loadRecords(){
+  if(!S.session){$('recordList').innerHTML='<div class="empty">登录后查看。</div>';['rCount','rAvg','rBest','rQ'].forEach(i=>$(i).textContent='—');return;}
+  const rows=await allRows('attempts','id,paper_id,status,total_score,full_score,correct_count,question_count,started_at,submitted_at',q=>q.eq('user_id',S.user.id).order('started_at',{ascending:false}));
+  const done=rows.filter(r=>r.status==='graded');
+  const avg=done.length?Math.round(done.reduce((s,x)=>s+(Number(x.full_score)?Number(x.total_score)/Number(x.full_score):0),0)/done.length*100):0;
+  const best=done.length?Math.max(...done.map(x=>Number(x.total_score)||0)):0;
+  const q=done.reduce((s,x)=>s+(Number(x.question_count)||0),0);
+  $('rCount').textContent=done.length;
+  $('rAvg').textContent=avg;
+  $('rBest').textContent=best;
+  $('rQ').textContent=q;
+  const map=new Map(S.papers.map(p=>[p.id,p]));
+  $('recordList').innerHTML=rows.length?rows.map(a=>{
+    const p=map.get(a.paper_id);const rate=Number(a.full_score)?Math.round(Number(a.total_score)/Number(a.full_score)*100):0;
+    return `<div class="lrow"><div class="lm"><b>${esc(p?.title||'试卷')}</b><small>${fmt(a.submitted_at||a.started_at)} · ${a.status==='graded'?'已批改':'进行中'}</small></div>
+      <div class="la">${a.status==='graded'?`<span class="pill">${a.total_score}/${a.full_score} · ${rate}%</span>`:'<span class="pill gray">未提交</span>'}<button class="line sm" data-open-att2="${a.id}">查看</button></div></div>`;
+  }).join(''):'<div class="empty">暂无记录。</div>';
+  document.querySelectorAll('[data-open-att2]').forEach(b=>b.onclick=()=>openResult(b.dataset.openAtt2).catch(e=>toast(err(e),'err')));
+}
+$('reloadRecords').onclick=()=>loadRecords().catch(e=>toast(err(e),'err'));
+$('exportRecords').onclick=()=>exportRecords().catch(e=>toast(err(e),'err'));
+async function exportRecords(){
+  if(!S.session)return;
+  if(!window.XLSX)return toast('Excel 组件未加载。','err');
+  const rows=await allRows('attempts','paper_id,total_score,full_score,correct_count,question_count,started_at,submitted_at',q=>q.eq('user_id',S.user.id));
+  const map=new Map(S.papers.map(p=>[p.id,p]));
+  const data=rows.map(r=>[map.get(r.paper_id)?.title||'',r.total_score||0,r.full_score||0,r.correct_count||0,r.question_count||0,fmt(r.started_at),fmt(r.submitted_at)]);
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.aoa_to_sheet([['试卷','得分','满分','正确','题数','开始','提交'],...data]);
+  XLSX.utils.book_append_sheet(wb,ws,'成绩');
+  XLSX.writeFile(wb,'我的化竞成绩.xlsx');
+}
+
+/* ---------- 题库管理 ---------- */
+async function loadBank(){
+  const yes=isTeacher();
+  $('bankDeny').style.display=yes?'none':'block';
+  $('bankBody').style.display=yes?'block':'none';
+  if(!yes)return;
+  await loadBankList();
+  await loadPapers();
+  $('impPaper').innerHTML='<option value="">选择试卷</option>'+S.papers.map(p=>`<option value="${p.id}">${esc(p.title)}</option>`).join('');
+  $('qPaper').innerHTML=$('impPaper').innerHTML;
+}
+async function loadBankList(){
+  const rows=await allRows('papers','id,title,year,status,question_count,full_score,created_at',q=>q.order('year',{ascending:false}));
+  $('bankList').innerHTML=rows.length?rows.map(p=>`<div class="lrow"><div class="lm"><b>${esc(p.title)}</b><small>${p.year||'—'} · ${p.question_count||0} 题 · 满分 ${p.full_score||0} · ${p.status}</small></div>
+    <div class="la"><button class="line sm" data-del-paper="${p.id}">删除</button></div></div>`).join(''):'<div class="empty">暂无试卷。</div>';
+  document.querySelectorAll('[data-del-paper]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('删除试卷会一并删除其题目，确定？'))return;
+    try{const{error}=await db.from('papers').delete().eq('id',b.dataset.delPaper);if(error)throw error;toast('已删除。','ok');loadBankList();}
+    catch(e){toast(err(e),'err');}
+  });
+}
+$('reloadBank').onclick=()=>loadBank().catch(e=>toast(err(e),'err'));
+$('seedBtn').onclick=async()=>{
+  if(!isTeacher())return;
+  if(!confirm('将向数据库写入内置题库（2015/2017/2023/2024/2025）。若同名的试卷已存在会跳过。确定？'))return;
+  const b=$('seedBtn');const old=b.textContent;b.disabled=true;b.textContent='写入中…';
+  try{
+    const r=await rpc('seed_builtin_papers',{p_data:window.__SEED__});
+    toast(`载入完成：新增 ${r.papers} 套试卷、${r.questions} 道题。`,'ok');
+    await loadBank();await loadPapers();
+  }catch(e){toast(err(e),'err');}
+  finally{b.disabled=false;b.textContent=old;}
+};
+$('newPaperBtn').onclick=async()=>{
+  const title=prompt('新试卷标题：');if(!title)return;
+  const year=Number(prompt('年份（如 2025）：')||0)||null;
+  try{
+    const{data,error}=await db.from('papers').insert({title,year,status:'published',created_by:S.user.id,exam_type:'天津化学竞赛'}).select().single();
+    if(error)throw error;
+    toast('试卷已创建。','ok');await loadBankList();await loadPapers();
+  }catch(e){toast(err(e),'err');}
+};
+$('tplBtn').onclick=()=>{
+  if(!window.XLSX)return toast('Excel 组件未加载。','err');
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.aoa_to_sheet([
+    ['题型','题干','A','B','C','D','答案','分值','解析','模块'],
+    ['单选','下列化合物酸性最强的是（ ）','苯酚','醋酸','苯甲酸','三氟乙酸','D',1.5,'三氟乙酸中三个氟原子强烈吸电子，酸性最强。','有机化学'],
+    ['多选','下列叙述正确的是（ ）','精密度指多次测定结果的一致程度','准确度指平均值与真值的接近程度','精密度高准确度一定高','精密度高系统误差一定小','AB',2,'精密度与准确度是两回事。','分析化学'],
+    ['判断','相同温度下两种一元酸HX和HY溶液有相同pH，则浓度相同。','','','','','错',1.5,'弱酸浓度不同，pH可能相同。','无机化学'],
+    ['填空','HCO₃⁻的共轭酸是____。','','','','','H2CO3',2,'HCO₃⁻接受一个质子生成H₂CO₃。','无机化学']
+  ]);
+  XLSX.utils.book_append_sheet(wb,ws,'试题');
+  XLSX.writeFile(wb,'化竞试题导入模板.xlsx');
+};
+$('impBtn').onclick=async()=>{
+  try{
+    const pid=$('impPaper').value;
+    if(!pid)throw new Error('请选择目标试卷。');
+    const f=$('impFile').files[0];
+    if(!f)throw new Error('请选择文件。');
+    if(!window.XLSX)throw new Error('Excel 组件未加载。');
+    const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});
+    const sheet=wb.Sheets[wb.SheetNames[0]];
+    const raw=XLSX.utils.sheet_to_json(sheet,{defval:'',raw:false});
+    if(!raw.length)throw new Error('文件没有数据。');
+    const norm=k=>String(k||'').trim().replace(/\*+$/,'').toLowerCase().replace(/[\s_-]/g,'');
+    const pick=(o,...keys)=>{const m=new Map(Object.entries(o).map(([k,v])=>[norm(k),v]));for(const k of keys){const v=m.get(norm(k));if(v!==undefined&&v!=='')return String(v).trim();}return '';};
+    const toAns=(t,a,n)=>{
+      a=String(a||'').trim();
+      if(t==='judge'){
+        if(/^[对√TtYy]$/.test(a))return 0;
+        if(/^[错×FfNn]$/.test(a))return 1;
+        return null;
+      }
+      if(t==='multi'){
+        if(/^[A-Za-z,，、 ]+$/.test(a)&&/[A-Za-z]/.test(a)){
+          return a.toUpperCase().replace(/[^A-Z]/g,'').split('').map(c=>c.charCodeAt(0)-65).filter(x=>x>=0&&x<n).sort((x,y)=>x-y);
         }
+        return a.split(/[,，、\s]+/).map(Number).filter(x=>Number.isInteger(x)&&x>=0&&x<n).sort((x,y)=>x-y);
+      }
+      if(t==='single'){
+        if(/^[A-Za-z]$/.test(a))return a.toUpperCase().charCodeAt(0)-65;
+        const x=Number(a);return Number.isInteger(x)?x:null;
+      }
+      return a;
+    };
+    const rows=[];const errs=[];
+    raw.forEach((r,i)=>{
+      const no=i+2;
+      let t=pick(r,'题型','type');
+      const stem=pick(r,'题干','stem','题目','title');
+      if(!stem){errs.push(`第${no}行：题干为空`);return;}
+      if(/多/.test(t)||/multi/i.test(t))t='multi';
+      else if(/判/.test(t)||/judge/i.test(t))t='judge';
+      else if(/填/.test(t)||/blank/i.test(t))t='blank';
+      else t='single';
+      const opts=[];
+      if(t==='single'||t==='multi')for(const L of 'ABCDE'){const v=pick(r,L);if(v)opts.push(v);}
+      if((t==='single'||t==='multi')&&opts.length<2){errs.push(`第${no}行：选择题选项不足`);return;}
+      if(t==='judge'&&!opts.length)opts.length=0;
+      const ansRaw=pick(r,'答案','answer','key');
+      if(!ansRaw){errs.push(`第${no}行：答案为空`);return;}
+      const ans=toAns(t,ansRaw,opts.length||4);
+      if(ans===null){errs.push(`第${no}行：答案格式无法识别`);return;}
+      rows.push({
+        section:pick(r,'模块','section')||'未分类',
+        question_type:t,stem,options:opts,answer_key:ans,
+        explanation:pick(r,'解析','explanation')||'',
+        score:Number(pick(r,'分值','score'))||1.5,
+        status:'published',created_by:S.user.id
+      });
+    });
+    if(errs.length){$('impPreview').innerHTML=`<div class="note err">有 ${errs.length} 行错误：<br>${errs.slice(0,20).map(esc).join('<br>')}</div>`;msg('impMsg','导入中止，请修正后重试。','err');return;}
+    const r=await rpc('bulk_import_questions',{p_paper_id:pid,p_rows:rows});
+    msg('impMsg',`成功导入 ${r.inserted} 道题。`,'ok');
+    $('impPreview').innerHTML=`<div class="note ok">已导入 ${r.inserted} 道题到试卷。</div>`;
+    toast('导入成功。','ok');
+  }catch(e){msg('impMsg',err(e),'err');toast(err(e),'err');}
+};
+$('loadQsBtn').onclick=async()=>{
+  try{
+    const pid=$('qPaper').value;if(!pid)return toast('请选择试卷。','err');
+    const qs=await run(db.from('questions').select('id,qno,section,question_type,stem,options,answer_key,explanation,score').eq('paper_id',pid).order('qno'));
+    $('qList').innerHTML=qs.length?qs.map(q=>`<div class="lrow"><div class="lm"><b>${esc(q.qno+'. '+q.stem)}</b>
+      <small>${q.question_type} · ${q.score} 分 · 答案 ${esc(Array.isArray(q.answer_key)?q.answer_key.map(x=>'ABCDEFGH'[x]).join(''):q.answer_key)}</small>
+      <small>${esc(q.explanation||'')}</small></div>
+      <div class="la"><button class="warn sm" data-del-q="${q.id}">删除</button></div></div>`).join(''):'<div class="empty">该试卷暂无题目。</div>';
+    document.querySelectorAll('[data-del-q]').forEach(b=>b.onclick=async()=>{
+      if(!confirm('确定删除？'))return;
+      try{const{error}=await db.from('questions').delete().eq('id',b.dataset.delQ);if(error)throw error;toast('已删除。','ok');$('loadQsBtn').click();}
+      catch(e){toast(err(e),'err');}
+    });
+  }catch(e){toast(err(e),'err');}
+};
+$('expPaperBtn').onclick=async()=>{
+  try{
+    const pid=$('qPaper').value;if(!pid)return toast('请选择试卷。','err');
+    if(!window.XLSX)return toast('Excel 组件未加载。','err');
+    const p=S.papers.find(x=>x.id===pid);
+    const qs=await run(db.from('questions').select('qno,section,question_type,stem,options,answer_key,explanation,score').eq('paper_id',pid).order('qno'));
+    const data=qs.map(q=>{
+      const o=Array.isArray(q.options)?q.options:['','','','',''];
+      const ak=Array.isArray(q.answer_key)?q.answer_key.map(x=>'ABCDEFGH'[x]).join(''):(typeof q.answer_key==='number'?'ABCDEFGH'[q.answer_key]:q.answer_key);
+      return [q.section,q.stem,o[0]||'',o[1]||'',o[2]||'',o[3]||'',ak,q.score,q.explanation||''];
+    });
+    const wb=XLSX.utils.book_new();
+    const ws=XLSX.utils.aoa_to_sheet([['模块','题干','A','B','C','D','答案','分值','解析'],...data]);
+    XLSX.utils.book_append_sheet(wb,ws,'试题');
+    XLSX.writeFile(wb,`${(p?.title||'试卷')}.xlsx`);
+  }catch(e){toast(err(e),'err');}
+};
+$('reloadTeacherRecords').onclick=()=>loadTeacherRecords().catch(e=>toast(err(e),'err'));
+async function loadTeacherRecords(){
+  const rows=await allRows('attempts','id,user_id,paper_id,status,total_score,full_score,submitted_at',q=>q.eq('status','graded').order('submitted_at',{ascending:false}).limit(200));
+  if(!rows.length){$('teacherRecords').innerHTML='<div class="empty">暂无成绩。</div>';return;}
+  const uids=[...new Set(rows.map(r=>r.user_id))];
+  const pids=[...new Set(rows.map(r=>r.paper_id))];
+  const[profs,papers]=await Promise.all([
+    uids.length?allRows('profiles','id,display_name',q=>q.in('id',uids)):[],
+    pids.length?allRows('papers','id,title',q=>q.in('id',pids)):[]
+  ]);
+  const pm=new Map(profs.map(p=>[p.id,p])),ppm=new Map(papers.map(p=>[p.id,p]));
+  $('teacherRecords').innerHTML=`<div class="tw"><table><thead><tr><th>学生</th><th>试卷</th><th>得分</th><th>满分</th><th>提交</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr><td>${esc(pm.get(r.user_id)?.display_name||r.user_id.slice(0,8))}</td><td>${esc(ppm.get(r.paper_id)?.title||'')}</td><td>${r.total_score}</td><td>${r.full_score}</td><td>${fmt(r.submitted_at)}</td></tr>`).join('')}
+  </tbody></table></div>`;
+}
 
-        async function register(username, email, password, role) {
-            try {
-                const { data, error } = await supabase.auth.signUp({
-                    email,
-                    password
-                });
+/* ---------- 账号管理 ---------- */
+async function loadUsers(){
+  const yes=isAdmin();
+  $('userDeny').style.display=yes?'none':'block';
+  $('userBody').style.display=yes?'block':'none';
+  if(!yes)return;
+  await Promise.all([loadUserList(),loadPlatformSettings(),loadAudit()]);
+}
+$('bootstrapBtn').onclick=async()=>{
+  if(!S.session)return toast('请先登录。','err');
+  if(!confirm('确定把当前账号设为首位管理员？'))return;
+  try{
+    await rpc('bootstrap_first_admin');
+    toast('已设为管理员。','ok');
+    await refreshIdentity();
+    await loadUsers();
+  }catch(e){toast(err(e),'err');}
+};
+async function loadUserList(){
+  const q=txt($('uSearch').value).toLowerCase(),rf=$('uRoleF').value;
+  const users=await rpc('admin_list_users',{p_search:q||null,p_role:rf||null});
+  $('userTbody').innerHTML=users.length?users.map(u=>`<tr>
+    <td><b>${esc(u.email||'')}</b><br><small style="color:#8391a6">${esc(u.id)}</small><br><small style="color:#8391a6">注册 ${fmt(u.created_at)}</small></td>
+    <td>${esc(u.display_name||'—')}</td>
+    <td>${(u.roles||[]).map(r=>`<span class="pill">${esc(r)}</span>`).join(' ')||'—'}
+      <div class="row" style="margin-top:5px">
+        <select data-role-sel="${u.id}" style="width:auto;padding:5px;font-size:12px">
+          <option value="student">学生</option><option value="teacher">教师</option><option value="admin">管理员</option>
+        </select>
+        <button class="line sm" data-set-role="${u.id}">设置</button>
+      </div>
+    </td>
+    <td>${fmt(u.created_at)}</td>
+    <td>${fmt(u.last_sign_in_at)}</td>
+    <td><button class="warn sm" data-del-user="${u.id}">删除</button></td>
+  </tr>`).join(''):'<tr><td colspan="6">无匹配账号。</td></tr>';
+  document.querySelectorAll('[data-set-role]').forEach(b=>b.onclick=async()=>{
+    const uid=b.dataset.setRole,r=document.querySelector(`[data-role-sel="${uid}"]`).value;
+    try{await rpc('admin_set_role',{p_user_id:uid,p_role:r});toast('角色已更新。','ok');await loadUserList();}
+    catch(e){toast(err(e),'err');}
+  });
+  document.querySelectorAll('[data-del-user]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('确认删除该账号？会一并删除其答题记录。'))return;
+    try{await rpc('admin_delete_user',{p_user_id:b.dataset.delUser});toast('已删除。','ok');await loadUserList();}
+    catch(e){toast(err(e),'err');}
+  });
+}
+$('reloadUsers').onclick=()=>loadUserList().catch(e=>toast(err(e),'err'));
+$('doSearch').onclick=()=>loadUserList().catch(e=>toast(err(e),'err'));
+async function loadPlatformSettings(){
+  try{
+    const d=await rpc('chem_get_settings');
+    $('regMode').value=d?.registration_mode||'open';
+    $('regDomains').value=d?.allowed_domains||'';
+  }catch(e){console.warn(e);}
+}
+$('saveSettings').onclick=async()=>{
+  try{
+    await rpc('admin_set_settings',{p_registration_mode:$('regMode').value,p_allowed_domains:txt($('regDomains').value)||null});
+    msg('setMsg','已保存。','ok');toast('设置已保存。','ok');
+  }catch(e){msg('setMsg',err(e),'err');}
+};
+async function loadAudit(){
+  const rows=await allRows('audit_logs','id,actor_id,action,details,created_at',q=>q.order('created_at',{ascending:false}).limit(200));
+  $('auditList').innerHTML=rows.length?rows.map(r=>`<div class="lrow"><div class="lm"><b>${esc(r.action)}</b>
+    <small>${fmt(r.created_at)} · ${esc(r.actor_id?.slice(0,8)||'系统')}</small><small>${esc(JSON.stringify(r.details||{}))}</small></div></div>`).join(''):'<div class="empty">暂无记录。</div>';
+}
+$('reloadAudit').onclick=()=>loadAudit().catch(e=>toast(err(e),'err'));
 
-                if (error) throw error;
+/* ---------- 个人设置 ---------- */
+async function loadProfile(){
+  if(!S.session){$('accEmail').textContent='未登录';return;}
+  $('accEmail').textContent=S.user.email||'';
+  $('pName').value=S.profile?.display_name||'';
+  $('pNo').value=S.profile?.student_no||'';
+  $('pClass').value=S.profile?.class_name||'';
+  $('pSchool').value=S.profile?.school||'';
+}
+$('saveProfile').onclick=async()=>{
+  try{
+    await rpc('update_profile',{p_display_name:txt($('pName').value),p_student_no:txt($('pNo').value),p_class_name:txt($('pClass').value),p_school:txt($('pSchool').value)});
+    toast('已保存。','ok');await refreshIdentity();
+  }catch(e){msg('profMsg',err(e),'err');}
+};
+$('sendResetBtn').onclick=async()=>{
+  try{
+    if(!S.user?.email)throw new Error('未登录。');
+    const{error}=await db.auth.resetPasswordForEmail(S.user.email,{redirectTo:redirectUrl()});
+    if(error)throw error;msg('secMsg','重置邮件已发送。','ok');
+  }catch(e){msg('secMsg',err(e),'err');}
+};
+$('signOutBtn').onclick=async()=>{
+  await db.auth.signOut();toast('已退出。','ok');go('home');
+};
+$('expMine').onclick=()=>exportRecords().catch(e=>toast(err(e),'err'));
 
-                // 创建用户档案
-                const { error: profileError } = await supabase
-                    .from('users')
-                    .insert([{
-                        id: data.user.id,
-                        email,
-                        username,
-                        role
-                    }]);
+/* ---------- 启动 ---------- */
+async function boot(){
+  if(!db){$('cloudState').innerHTML='<span class="dot bad"></span>SDK 未加载';return;}
+  try{
+    const{data,error}=await db.auth.getSession();
+    if(error)throw error;
+    S.session=data.session;
+    await refreshIdentity();
+    await loadSettings();
+    await loadPapers(true);
+    await loadHome();
+    if(location.hash.includes('type=recovery'))showRecoveryForm();
+    $('cloudState').innerHTML='<span class="dot"></span>云端已连接';
+  }catch(e){
+    $('cloudState').innerHTML='<span class="dot bad"></span>连接异常';
+    toast(err(e),'err');
+    console.error(e);
+  }
+}
+boot();
+})();
+</script>
 
-                if (profileError) throw profileError;
-
-                showAlert('注册成功！请检查邮箱验证链接。', 'success');
-                setTimeout(() => {
-                    appState.authMode = 'login';
-                    updateAuthUI();
-                }, 2000);
-            } catch (error) {
-                showAlert(error.message, 'danger');
-            }
-        }
-
-        async function logout() {
-            try {
-                await supabase.auth.signOut();
-                appState.currentUser = null;
-                showPage('auth');
-            } catch (error) {
-                showAlert(error.message, 'danger');
-            }
-        }
-
-        async function loadUserProfile() {
-            if (!appState.currentUser) return;
-
-            try {
-                const { data, error } = await supabase
-                    .from('users')
-                    .select('*')
-                    .eq('id', appState.currentUser.id)
-                    .single();
-
-                if (error) throw error;
-
-                appState.currentUser = { ...appState.currentUser, ...data };
-                updateUserUI();
-            } catch (error) {
-                console.error('加载用户信息失败:', error);
-            }
-        }
-
-        function updateUserUI() {
-            const user = appState.currentUser;
-            document.getElementById('userName').textContent = user?.username || '用户';
-            document.getElementById('userAvatar').textContent = (user?.username || 'U')[0].toUpperCase();
-
-            // 显示/隐藏教师菜单
-            const teacherNav = document.getElementById('teacherNav');
-            if (user?.role === 'teacher' || user?.role === 'admin') {
-                teacherNav.style.display = 'block';
-            } else {
-                teacherNav.style.display = 'none';
-            }
-        }
-
-        // ============================================================================
-        // UI管理
-        // ============================================================================
-
-        function showPage(page) {
-            appState.currentPage = page;
-
-            // 隐藏所有页面
-            document.getElementById('authPage').style.display = 'none';
-            document.getElementById('dashboardPage').style.display = 'none';
-            document.getElementById('examsPage').style.display = 'none';
-            document.getElementById('practiceContainer').style.display = 'none';
-            document.getElementById('wrongQuestionsPage').style.display = 'none';
-            document.getElementById('teacherPage').style.display = 'none';
-
-            // 更新导航
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-
-            // 显示指定页面
-            switch (page) {
-                case 'auth':
-                    document.getElementById('authPage').style.display = 'flex';
-                    document.querySelector('.navbar').style.display = 'none';
-                    break;
-                case 'dashboard':
-                    document.getElementById('dashboardPage').style.display = 'block';
-                    document.querySelector('[data-page="dashboard"]').classList.add('active');
-                    loadDashboard();
-                    break;
-                case 'exams':
-                    document.getElementById('examsPage').style.display = 'block';
-                    document.querySelector('[data-page="exams"]').classList.add('active');
-                    loadExams();
-                    break;
-                case 'practice':
-                    document.getElementById('practiceContainer').style.display = 'block';
-                    break;
-                case 'wrong-questions':
-                    document.getElementById('wrongQuestionsPage').style.display = 'block';
-                    document.querySelector('[data-page="wrong-questions"]').classList.add('active');
-                    loadWrongQuestions();
-                    break;
-                case 'teacher':
-                    document.getElementById('teacherPage').style.display = 'block';
-                    document.querySelector('[data-page="teacher"]').classList.add('active');
-                    break;
-            }
-
-            // 显示导航栏
-            if (page !== 'auth') {
-                document.querySelector('.navbar').style.display = 'block';
-            }
-        }
-
-        function showAlert(message, type = 'info') {
-            const alertEl = document.getElementById('authAlert');
-            alertEl.textContent = message;
-            alertEl.className = `alert alert-${type} show`;
-            setTimeout(() => {
-                alertEl.classList.remove('show');
-            }, 3000);
-        }
-
-        function updateAuthUI() {
-            document.querySelectorAll('.auth-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.auth-form').forEach(form => {
-                form.classList.remove('show');
-            });
-
-            const activeTab = document.querySelector(`[data-tab="${appState.authMode}"]`);
-            const activeForm = document.getElementById(appState.authMode === 'login' ? 'loginForm' : 'registerForm');
-
-            if (activeTab) activeTab.classList.add('active');
-            if (activeForm) activeForm.classList.add('show');
-        }
-
-        // ============================================================================
-        // 数据加载函数
-        // ============================================================================
-
-        async function loadDashboard() {
-            // 加载用户统计
-            const { data: stats } = await supabase
-                .from('user_stats')
-                .select('*')
-                .eq('user_id', appState.currentUser.id)
-                .single();
-
-            document.getElementById('totalAttempts').textContent = stats?.total_attempts || 0;
-            document.getElementById('accuracy').textContent = Math.round(stats?.accuracy_rate || 0);
-            document.getElementById('streak').textContent = stats?.current_streak || 0;
-            document.getElementById('studyHours').textContent = Math.round((stats?.total_time_spent || 0) / 3600);
-
-            // 加载最近考试
-            const { data: recent } = await supabase
-                .from('practice_records')
-                .select('*, exams(*)')
-                .eq('user_id', appState.currentUser.id)
-                .order('created_at', { ascending: false })
-                .limit(5);
-
-            const recentExamsEl = document.getElementById('recentExams');
-            recentExamsEl.innerHTML = '';
-
-            if (recent && recent.length > 0) {
-                recent.forEach(record => {
-                    const exam = record.exams;
-                    recentExamsEl.innerHTML += `
-                        <div class="exam-item">
-                            <div class="exam-info">
-                                <h3>${exam.title}</h3>
-                                <div class="exam-meta">
-                                    <span>📅 ${new Date(record.created_at).toLocaleDateString()}</span>
-                                    <span>⏱️ ${record.completion_time || 0}秒</span>
-                                    <span>📊 ${record.obtained_score}/${record.total_score}</span>
-                                </div>
-                            </div>
-                            <div class="exam-actions">
-                                <button class="btn btn-small btn-primary" onclick="reviewPractice('${record.id}')">查看</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            } else {
-                recentExamsEl.innerHTML = '<p style="color: var(--text-secondary);">还没有完成过任何考试</p>';
-            }
-        }
-
-        async function loadExams() {
-            try {
-                const { data, error } = await supabase
-                    .from('exams')
-                    .select('*')
-                    .eq('status', 'published')
-                    .order('year', { ascending: false });
-
-                if (error) throw error;
-
-                const examsList = document.getElementById('examsList');
-                examsList.innerHTML = '';
-
-                if (data && data.length > 0) {
-                    data.forEach(exam => {
-                        examsList.innerHTML += `
-                            <div class="exam-item">
-                                <div class="exam-info">
-                                    <h3>${exam.title}</h3>
-                                    <div class="exam-meta">
-                                        <span>📅 ${exam.year || '年份未定'}年</span>
-                                        <span>⏱️ ${exam.duration_minutes}分钟</span>
-                                        <span>📊 满分${exam.total_score}分</span>
-                                    </div>
-                                </div>
-                                <div class="exam-actions">
-                                    <button class="btn btn-small btn-primary" onclick="startPractice('${exam.id}')">开始练习</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else {
-                    examsList.innerHTML = '<div class="card"><p style="color: var(--text-secondary);">暂无发布的考试</p></div>';
-                }
-            } catch (error) {
-                console.error('加载考试失败:', error);
-                showAlert('加载考试失败，请重试', 'danger');
-            }
-        }
-
-        async function loadWrongQuestions() {
-            try {
-                const { data, error } = await supabase
-                    .from('wrong_questions')
-                    .select('*, questions(*)')
-                    .eq('user_id', appState.currentUser.id)
-                    .order('last_reviewed_at', { ascending: false });
-
-                if (error) throw error;
-
-                const list = document.getElementById('wrongQuestionsList');
-                list.innerHTML = '';
-
-                if (data && data.length > 0) {
-                    data.forEach(item => {
-                        const question = item.questions;
-                        list.innerHTML += `
-                            <div class="wrong-item">
-                                <div class="wrong-item-header">
-                                    <span class="wrong-item-title">第${question.question_number}题</span>
-                                    <span class="wrong-count">出错${item.incorrect_times}次</span>
-                                </div>
-                                <p style="color: var(--text-primary); margin-bottom: 12px;">${question.title}</p>
-                                ${item.mistake_reason ? `<p class="wrong-reason">错误原因: ${item.mistake_reason}</p>` : ''}
-                                ${item.learning_notes ? `<div class="wrong-notes">${item.learning_notes}</div>` : ''}
-                                <button class="btn btn-small btn-primary" onclick="viewSolution('${question.id}')">查看解析</button>
-                            </div>
-                        `;
-                    });
-                } else {
-                    list.innerHTML = '<div class="card"><p style="color: var(--text-secondary);">你的错题库是空的，继续加油！</p></div>';
-                }
-            } catch (error) {
-                console.error('加载错题库失败:', error);
-            }
-        }
-
-        // ============================================================================
-        // 事件监听
-        // ============================================================================
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            // 检查认证状态
-            const { data: { session } } = await supabase.auth.getSession();
-            
-            if (session) {
-                appState.currentUser = session.user;
-                await loadUserProfile();
-                showPage('dashboard');
-            } else {
-                showPage('auth');
-            }
-
-            // 认证标签页切换
-            document.querySelectorAll('.auth-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    appState.authMode = tab.dataset.tab;
-                    updateAuthUI();
-                });
-            });
-
-            // 登录表单提交
-            document.getElementById('loginForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-                await login(email, password);
-            });
-
-            // 注册表单提交
-            document.getElementById('registerForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const username = document.getElementById('regUsername').value;
-                const email = document.getElementById('regEmail').value;
-                const password = document.getElementById('regPassword').value;
-                const role = document.getElementById('regRole').value;
-                await register(username, email, password, role);
-            });
-
-            // 导航链接
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const page = link.dataset.page;
-                    showPage(page);
-                });
-            });
-
-            // 用户菜单
-            document.getElementById('userAvatar').addEventListener('click', () => {
-                document.getElementById('userMenu').classList.toggle('show');
-            });
-
-            document.querySelectorAll('#userMenu a, #userMenu button').forEach(item => {
-                item.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    const action = item.dataset.action;
-                    if (action === 'logout') {
-                        await logout();
-                    }
-                });
-            });
-
-            // 教师菜单
-            document.querySelectorAll('.teacher-menu-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    document.querySelectorAll('.teacher-menu-item').forEach(i => i.classList.remove('active'));
-                    item.classList.add('active');
-                    
-                    document.querySelectorAll('.panel-content').forEach(panel => panel.style.display = 'none');
-                    const panelId = item.dataset.panel + 'Panel';
-                    const panel = document.getElementById(panelId);
-                    if (panel) panel.style.display = 'block';
-                });
-            });
-
-            // 关闭模态框
-            document.querySelectorAll('[data-action="close"]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
-                });
-            });
-
-            // 文件上传区
-            const uploadZone = document.getElementById('uploadZone');
-            uploadZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadZone.classList.add('dragover');
-            });
-
-            uploadZone.addEventListener('dragleave', () => {
-                uploadZone.classList.remove('dragover');
-            });
-
-            uploadZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadZone.classList.remove('dragover');
-                const files = e.dataTransfer.files;
-                handleFileUpload(files[0]);
-            });
-
-            uploadZone.addEventListener('click', () => {
-                document.getElementById('fileInput').click();
-            });
-
-            document.getElementById('fileInput').addEventListener('change', (e) => {
-                handleFileUpload(e.target.files[0]);
-            });
-        });
-
-        // ============================================================================
-        // 辅助函数
-        // ============================================================================
-
-        async function startPractice(examId) {
-            appState.currentExam = examId;
-            // TODO: 实现开始练习逻辑
-            showAlert('练习功能即将推出', 'info');
-        }
-
-        async function reviewPractice(practiceId) {
-            // TODO: 实现查看练习详情逻辑
-            showAlert('查看功能即将推出', 'info');
-        }
-
-        async function viewSolution(questionId) {
-            // TODO: 实现查看解析逻辑
-            const modal = document.getElementById('solutionModal');
-            modal.classList.add('show');
-        }
-
-        async function handleFileUpload(file) {
-            if (!file) return;
-            
-            // TODO: 实现文件上传逻辑
-            showAlert('文件上传功能即将推出', 'info');
-        }
-    </script>
-</body>
-</html>
+<!-- ============================================================
+     内置题库：2015 / 2017 / 2023 / 2024 / 2025
+     格式：[p: 年份, t: 标题, q: [ [题型, 题干, 选项数组(或''), 答案, 分值, 解析], ... ]]
+     题型：single（单选）、multi（多选）、judge（判断）、blank（填空）
+     答案：单选为字母索引（0=A,1=B,2=C,3=D）或字母；多选为字母串或索引数组；
+           判断：0=对, 1=错；填空为字符串
+     ============================================================ -->
+<script>
+window.__SEED__ = [
+{p:2015,t:'2015年天津市大学生化学竞赛理论知识个人赛',q:[
+['single','根据酸碱质子理论，下列各离子中，既可作酸又可作碱的是（ ）',['HO⁻（OCR，应为H₂O）','CO₃²⁻','NH₄⁺','HCO₃⁻'],'D',1.5,'HCO₃⁻既能给出质子（生成CO₃²⁻）又能接受质子（生成H₂CO₃），是两性物质。'],
+['single','2001年报道硼镁化合物刷新金属化合物超导温度记录。晶体中Mg原子形成正六棱柱，6个B原子位于棱柱内，化学式为（ ）',['MgB','MgB₂','MgB₄','MgB₆'],'B',1.5,'Mg位于12顶点+2面心，贡献12×1/6+2×1/2=3；B完全在内部为6；Mg:B=3:6=1:2，即MgB₂。'],
+['single','下列各组离子中，能在碱性溶液中大量共存，且加入盐酸过程中会生成气体和沉淀的是（ ）',['NH₄⁺、NO₃⁻、AlO₂⁻、SO₄²⁻','Na⁺、NO₃⁻、SiO₃²⁻、K⁺','K⁺、SO₄²⁻、AlO₂⁻、CO₃²⁻','K⁺、Cl⁻、HCO₃⁻、Ca²⁺'],'C',1.5,'C中CO₃²⁻加酸放CO₂，AlO₂⁻加酸生成Al(OH)₃沉淀，符合；A中NH₄⁺与碱不共存；B无气体；D生成CaCO₃沉淀不能共存。'],
+['single','干燥H₂S气体，可选用的干燥剂是（ ）',['P₂O₅','KOH','浓H₂SO₄','CuSO₄'],'A',1.5,'H₂S为酸性还原性气体，不能选碱性干燥剂KOH，不能用强氧化性浓H₂SO₄，CuSO₄会与H₂S生成CuS；应选酸性干燥剂P₂O₅。'],
+['single','下列分子中的电子数为奇数的是（ ）',['F₂','NO','CO₂','CO'],'B',1.5,'N有7个电子，O有8个，NO共15个电子，为奇数；其余均为偶数。'],
+['single','下面数值的有效数字位数最少的是（ ）',['25.30','pH=10.20','0.03030','9.31×10³'],'B',1.5,'pH值有效数字只看小数点后的位数；pH=10.20为2位有效数字，其余均为4位或3位。'],
+['single','用25 mL移液管移出的溶液体积应记为（ ）',['25 mL','25.0 mL','25.00 mL','25.000 mL'],'C',1.5,'移液管为精密量器，25 mL移液管读数应精确到小数点后两位，记作25.00 mL。'],
+['single','滴定分析中，指示剂颜色突变时停止滴定，这一点称为（ ）',['滴定终点','突跃范围','化学计量点','滴定误差'],'A',1.5,'指示剂变色停止滴定的点称为滴定终点；化学计量点是理论计算反应完全的点。'],
+['single','气-液色谱分析中，与分离度无关的操作是（ ）',['增加柱长','调节流速','改变固定液的化学性质','改用更灵敏的检测器'],'D',1.5,'检测器灵敏度只影响检测限，不改变色谱峰分离程度；A、B、C均影响分离度。'],
+['single','试液取样量为1~10 mL的分析方法称为（ ）',['常量分析','微量分析','半微量分析','痕量分析'],'C',1.5,'半微量分析取样量为0.01~0.1 g或1~10 mL。'],
+['single','恒温、恒压、非体积功为零，反应在任何温度下都能自发进行，则该反应的（ ）',['ΔH>0,ΔS>0','ΔH>0,ΔS<0','ΔH<0,ΔS>0','ΔH<0,ΔS<0'],'C',1.5,'ΔG=ΔH-TΔS<0要在任何温度都成立，需ΔH<0且ΔS>0。'],
+['single','人工降雨喷洒微小AgI颗粒，是为了破坏（ ）亚稳状态',['过饱和溶液','过冷液体','过热液体','过饱和蒸气'],'D',1.5,'云层中水蒸气达过饱和状态，AgI提供凝结中心，破坏过饱和蒸气。'],
+['single','使用表面活性剂时应当特别注意的问题是（ ）',['两性型和非离子型不能混用','阳离子型和阴离子型不能混用','阳离子型和非离子型不能混用','阴离子型不能在酸性环境中使用'],'B',1.5,'阳离子型和阴离子型表面活性剂混合产生沉淀，失去表面活性。'],
+['single','密闭容器中有大小不同的两个水珠，长期放置后（ ）',['大变大，小变小','大变大，小变大','大变小，小变大','均变小'],'A',1.5,'据开尔文公式，小液滴饱和蒸气压大于大液滴，小水珠蒸发凝结到大水珠上。'],
+['single','对于只作膨胀功的封闭系统，(∂A/∂T)_V的值是（ ）',['大于零','小于零','等于零','不能确定'],'B',1.5,'(∂A/∂T)_V=-S，熵S恒大于0，所以偏导数小于零。'],
+['single','下列化合物属于缩醛的是（ ）',['丁二酸酐','四氢呋喃甲醛','甲基丁内酯','2-甲基-1,3-二氧五环'],'D',1.5,'缩醛特征是同一碳上连两个醚键-O-C-O-，D为环状缩醛。'],
+['single','下述哪一个化合物可以和顺丁烯二酸酯发生双烯加成（ ）',['苯','吡啶','环戊二烯','环己烷'],'C',1.5,'Diels-Alder反应需共轭双烯体，环戊二烯反应活性很高。'],
+['single','下列化合物最易与HBr加成的是（ ）',['环丙烷','环丁烷','环戊烷','环己烷'],'A',1.5,'环丙烷三元环角张力大，易开环加成；环丁烷次之，环戊烷和环己烷较稳定。'],
+['single','试剂瓶中的苯甲酸长期放置后，在瓶口出现白色固体，该白色固体是（ ）',['苯甲酸聚合物','苯甲酸过氧化物','苯甲酸与CO₂的反应产物','苯甲酸'],'D',1.5,'苯甲酸具有升华性，升华到瓶口遇冷凝结为白色固体。'],
+['single','葡萄糖的构型常用符号D表示，这指的是它的（ ）',['相对构型','绝对构型','旋光方向','变旋现象'],'A',1.5,'D/L构型以甘油醛为基准，是相对构型；旋光方向用(+)/(-)表示。'],
+['multi','下列盐的水溶液（0.1 mol·dm⁻³）室温下接近中性的为（ ）',['Na₂HPO₄','NH₄Ac','KCl','NaHCO₃'],'BC',2,'KCl为强酸强碱盐呈中性，NH₄Ac为弱酸弱碱盐且Ka≈Kb接近中性；Na₂HPO₄和NaHCO₃均呈弱碱性。'],
+['multi','下列配离子中，八面体构型不会发生畸变的是（ ）',['[Mn(H₂O)₆]²⁺','[Cu(en)₂]²⁺','[Cu(NH₃)₄(H₂O)₂]²⁺','[Fe(CN)₆]⁴⁻'],'AD',2,'Cu²⁺为d⁹有姜-泰勒效应会畸变；Mn²⁺为d⁵高自旋、Fe²⁺在强场中为d⁶低自旋，对称分布不畸变。'],
+['multi','关于混盐CaOCl（酸性条件下可产生Cl₂）的判断正确的是（ ）',['与硫酸反应产生1 mol Cl₂时转移2N_A个电子','水溶液呈碱性','该盐也是复盐','氯元素化合价为+1和-1'],'BD',2,'CaOCl实为Ca(OCl)Cl。ClO⁻+Cl⁻生成1 mol Cl₂转移1 mol电子（N_A个），A错误；由弱酸HClO和强碱Ca(OH)₂组成，水溶液呈碱性，B正确；复盐须两种金属离子和一种酸根，C错误；Cl化合价为+1和-1，D正确。'],
+['multi','实验室中，离子交换树脂常用于（ ）',['鉴定阳离子','富集微量物质','作酸碱滴定的指示剂','作干燥剂','净化水以制备纯水'],'BE',2,'离子交换树脂常用于分离富集微量物质以及制备去离子水（纯水）。'],
+['multi','下列叙述中正确的是（ ）',['络合剂的酸效应使络合物稳定性降低','金属离子水解效应使络合物稳定性降低','辅助络合效应使络合物稳定性降低','各种副反应均使络合物稳定性降低'],'ABCD',2,'这些副反应都会消耗络合剂或金属离子，使主反应平衡逆向移动，使络合物表观稳定性降低。'],
+['multi','液体在毛细管中上升的高度反比于（ ）',['空气压力','表面张力','毛细管半径','液体密度'],'CD',2,'h=2γcosθ/(ρgr)，与液体密度ρ和毛细管半径r成反比。'],
+['multi','所谓热力学平衡一般是指（ ）',['热平衡','力平衡','相平衡','化学平衡'],'ABCD',2,'热力学平衡状态包括热平衡、力平衡、相平衡和化学平衡。'],
+['multi','下列化合物命名不正确的是（ ）',['3,3,5-三甲基己烷','2-乙基-1-戊烯','3-甲基-2-乙基-1-戊烯','2-乙基戊烷','2,2-二甲基-3-戊烯'],'DE',2,'D项主链选错，最长碳链应为己烷，正确命名为3-甲基己烷；E项双键编号错误，应从靠近双键一端编号，正确命名为4,4-二甲基-2-戊烯。'],
+['multi','以下反应属于自由基历程的有（ ）',['甲烷光照下与氯气反应','丙烯与NBS反应','丙烯在300℃下与Br₂反应','丙烯室温下与Br₂反应','丙烯在ROOR存在下与HBr反应','丙烯与HBr反应'],'ABCE',2,'A自由基取代；B烯丙位自由基取代；C高温自由基取代；E过氧化物引发自由基加成（反马氏）；D、F为亲电加成。'],
+['judge','“水滴石穿”主要是溶解了CO₂的雨水与CaCO₃长期作用生成了可溶性Ca(HCO₃)₂的缘故。',[],0,1.5,'正确。CaCO₃+CO₂+H₂O→Ca(HCO₃)₂，可溶性盐被水冲走。'],
+['judge','长期盛放NaOH溶液的试剂瓶不易打开，是因为NaOH与CO₂反应导致瓶内气体减少形成“负压”的缘故。',[],1,1.5,'错误。真正原因是NaOH与玻璃中的SiO₂反应生成粘性硅酸钠（Na₂SiO₃），将瓶塞与瓶口粘住。'],
+['judge','严格地讲，“通风橱”是一种不负责任的防污染手段，因为实验产生的有害气体没有得到转化或吸收。',[],0,1.5,'正确。通风橱只是将有害气体排到大气中稀释，未进行转化或吸收。'],
+['judge','H₂O的熔点比HF高，所以O-H…O氢键的键能比F-H…F氢键的键能大。',[],1,1.5,'错误。水分子能形成4个氢键，HF只能形成2个氢键，是氢键数目差异导致水的熔点更高；但F电负性大于O，F-H…F氢键键能大于O-H…O。'],
+['judge','第二周期中N和O两种元素的第一电离能大小顺序为：O>N。',[],1,1.5,'错误。N的电子排布为2s²2p³，半充满结构更稳定，第一电离能N>O。'],
+['judge','用邻二氮菲法测定微量铁时，加入盐酸羟胺的作用是调节酸度。',[],1,1.5,'错误。盐酸羟胺是还原剂，将Fe³⁺还原为Fe²⁺以便与邻二氮菲显色。'],
+['judge','用邻苯二甲酸氢钾标定NaOH溶液浓度时，可以选酚酞作指示剂。',[],0,1.5,'正确。邻苯二甲酸氢钾是弱酸，用NaOH滴定时化学计量点偏碱性，用酚酞合适。'],
+['judge','在分析数据中，所有的“0”均为有效数字。',[],1,1.5,'错误。如0.030中数字前的“0”不是有效数字，仅起定位作用。'],
+['judge','分析纯NaOH（固体）不可用于直接配制标准溶液。',[],0,1.5,'正确。NaOH易吸潮并吸收空气中的CO₂，纯度不够，需先配近似浓度再用基准物质标定。'],
+['judge','在络合滴定中，通常EDTA溶液都是用酸式滴定管盛装。',[],0,1.5,'正确。EDTA溶液呈酸性，且会腐蚀碱式滴定管的橡胶管。'],
+['judge','在G-曲线上的最低点处，ΔrGm=0，此时系统达到平衡状态。',[],0,1.5,'正确。G-曲线最低点对应ΔrGm=0即平衡状态。'],
+['judge','化学势μB就是混合物或溶液中组分B的偏摩尔吉布斯函数。',[],0,1.5,'正确。这是化学势的定义。'],
+['judge','在恒温、恒压、非体积功为零的条件下，某化学反应的ΔG越负，表明该反应进行的程度越大，反应速率越大。',[],1,1.5,'错误。ΔG越负只表明热力学趋势越大；速率取决于动力学因素（活化能），与ΔG无直接对应关系。'],
+['judge','若反应I的活化能小于反应II的，则相同温度下反应I的反应速率常数一定大于反应II的。',
