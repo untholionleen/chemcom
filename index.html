@@ -1,349 +1,333 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0f2b46">
-<title>天津市大学生化学竞赛理论知识个人赛 · 刷题与测评系统</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>津化通 · 天津市大学生化学竞赛刷题与仿真涂卡系统</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
-:root{--navy:#0f2b46;--blue:#1d4ed8;--teal:#0d9488;--gold:#d97706;--ink:#1e293b;--muted:#64748b;--line:#cbd5e1;--paper:#f8fafc;--white:#fff;--red:#dc2626;--green:#16a34a;--shadow:0 10px 25px rgba(15,43,70,0.06)}
-*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-button,input,select,textarea{font:inherit}button{border:0;border-radius:8px;padding:9px 14px;background:var(--blue);color:white;cursor:pointer;font-weight:600;transition:.15s}button:hover{filter:brightness(.95)}button:disabled{opacity:.4;cursor:not-allowed}button.secondary{background:#e2e8f0;color:var(--navy)}button.outline{background:white;border:1px solid var(--line);color:var(--blue)}button.danger{background:#fee2e2;color:var(--red);border:1px solid #fca5a5}
-.layout{min-height:100vh;display:grid;grid-template-columns:250px 1fr}.sidebar{background:var(--navy);color:white;padding:22px 14px;display:flex;flex-direction:column;gap:20px}.brand{font-size:20px;font-weight:800;letter-spacing:.5px;padding:0 8px}.brand small{display:block;font-size:9px;letter-spacing:1.5px;color:#94a3b8;margin-top:4px}
-.nav{display:grid;gap:6px}.nav button{background:transparent;color:#cbd5e1;text-align:left;font-weight:500}.nav button.active,.nav button:hover{background:rgba(255,255,255,0.12);color:white}
-.main{min-width:0}.topbar{position:sticky;top:0;z-index:10;height:70px;background:rgba(255,255,255,0.92);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,3vw,36px);backdrop-filter:blur(8px)}
-.content{max-width:1400px;margin:auto;padding:24px clamp(12px,3vw,32px)}.page{display:none}.page.active{display:block}
-.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow);margin-bottom:16px}.panel h2{margin-top:0;font-size:18px}
-.form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.form-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
-.field{display:grid;gap:5px;margin:8px 0}.field span{font-size:12px;color:var(--muted);font-weight:600}input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:#fff}
-.list{display:grid;gap:8px}.list-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:10px;background:white}
-.empty{padding:20px;color:var(--muted);text-align:center;border:1px dashed var(--line);border-radius:10px;font-size:13px}
-.toast{position:fixed;bottom:20px;right:20px;max-width:420px;padding:12px 16px;border-radius:10px;color:white;background:#0f2b46;box-shadow:0 10px 25px rgba(0,0,0,0.15);z-index:1000;display:none;font-size:13px}.toast.show{display:block}.toast.error{background:#dc2626}.toast.success{background:#16a34a}
-.timer{font-variant-numeric:tabular-nums;font-size:32px;font-weight:800;color:var(--blue)}
-.sheet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(45px,1fr));gap:6px;margin:12px 0}
-.sheet-ball{height:36px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600;background:#f1f5f9;cursor:pointer}
-.sheet-ball.answered{background:var(--blue);color:white;border-color:var(--blue)}
-@media(max-width:900px){.layout{display:block}.sidebar{display:none}}
+:root{--navy:#102544;--blue:#2d5da8;--teal:#12877f;--gold:#e8b858;--ink:#1a2940;--muted:#718098;--line:#e0e7f0;--paper:#f3f6fb;--white:#fff;--red:#b53e49;--green:#08796c;--shadow:0 12px 28px #1d35570a}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif}
+button{border:0;border-radius:10px;padding:10px 16px;background:var(--blue);color:white;cursor:pointer;font-weight:650;transition:.15s}button:hover{filter:brightness(.95)}button.secondary{background:#e9eff8;color:var(--navy)}button.outline{background:white;border:1px solid var(--line);color:var(--blue)}button.danger{background:#fff0f0;color:var(--red)}
+.layout{min-height:100vh;display:grid;grid-template-columns:250px 1fr}
+.sidebar{background:var(--navy);color:white;padding:24px 16px;display:flex;flex-direction:column;gap:24px}
+.brand{font-size:22px;font-weight:800;letter-spacing:.5px}.brand small{display:block;font-size:10px;color:#b6c8df;margin-top:4px}
+.nav{display:grid;gap:8px}.nav button{background:transparent;color:#d6e3f5;text-align:left;font-weight:550}.nav button.active,.nav button:hover{background:#ffffff1e;color:white}
+.main{min-width:0}.topbar{position:sticky;top:0;z-index:4;height:72px;background:#ffffffed;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 32px;backdrop-filter:blur(10px)}
+.content{max-width:1400px;margin:auto;padding:24px}
+.page{display:none}.page.active{display:block}
+.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:var(--shadow);margin-bottom:20px}
+.form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.field{display:grid;gap:6px;margin:10px 0}.field span,.field label{font-size:12px;color:var(--muted);font-weight:650}
+.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #d6deea;border-radius:9px;background:#fff}
+.status-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;background:#e5f6f1;color:#08766f;font-size:11px}
+.scantron-sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(55px,1fr));gap:8px;margin:15px 0}
+.scantron-bubble{width:36px;height:36px;border-radius:50%;border:2px solid var(--blue);background:white;color:var(--blue);display:grid;place-items:center;font-weight:700;cursor:pointer;font-size:13px;transition:.1s}
+.scantron-bubble.selected{background:var(--blue);color:white}
+.question-card{border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:14px;background:#fbfcfe}
+.question-card.correct{border-color:var(--green);background:#f0fbf8}
+.question-card.wrong{border-color:var(--red);background:#fff8f8}
+.toast{position:fixed;bottom:20px;right:20px;padding:14px 20px;border-radius:12px;color:white;background:#132b4c;z-index:100;display:none}
+.toast.show{display:block}.toast.success{background:#08796c}.toast.error{background:#9d2e3b}
+@media(max-width:900px){.layout{display:block}.sidebar{display:none}.form-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="layout">
-<aside class="sidebar"><div class="brand">化竞个人赛系统<small>CHEM-COMPETITION 2026</small></div><nav class="nav">
-<button class="active" data-page="home">⌂ 竞赛总览</button>
-<button data-page="practice">✍ 在线刷题与模考</button>
-<button data-page="sheet">⭕ 仿真涂卡交卷</button>
-<button data-page="records">📊 个人成绩档案</button>
-<button data-page="teacher">✎ 教师与题库管理</button>
-<button data-page="admin">⚙ 系统账号后台</button>
-</nav><div style="margin-top:auto;font-size:11px;color:#94a3b8;padding:0 8px">天津市大学生化学竞赛<br>理论知识个人赛专用系统</div></aside>
+<aside class="sidebar">
+  <div class="brand">津化通<small>天津市大学生化学竞赛刷题系统</small></div>
+  <nav class="nav">
+    <button class="active" data-page="home">⌂ 竞赛刷题总览</button>
+    <button data-page="practice">✏️ 仿真涂卡刷题</button>
+    <button data-page="import">📥 批量导入试题</button>
+    <button data-page="records">📊 成绩与错题档案</button>
+    <button data-page="admin">⚙️ 账号与权限管理</button>
+  </nav>
+</aside>
 <main class="main">
-<header class="topbar"><div style="display:flex;align-items:center;gap:12px"><h1 id="pageTitle" style="font-size:18px;margin:0">竞赛总览</h1></div><div style="display:flex;align-items:center;gap:10px"><span id="userLabel" style="font-size:13px;color:var(--muted)">访客模式</span><button class="secondary" id="authButton">登录 / 注册</button></div></header>
-<div class="content">
-
-<!-- 首页总览 -->
-<section class="page active" id="page-home">
-<div class="panel" style="background:linear-gradient(135deg,#0f2b46,#1e3a8a);color:white">
-  <h2>天津市大学生化学竞赛理论知识个人赛</h2>
-  <p style="color:#cbd5e1;line-height:1.6">本系统专为天津市大学生化学竞赛理论知识个人赛打造，涵盖无机、分析、有机、物理化学历年真题及专项模拟。支持在线刷题、仿真涂卡、客观题自动批改、主观题教师复核与全方位账号管理。</p>
-  <button style="background:var(--teal);margin-top:10px" data-goto="practice">立即开始刷题练习 →</button>
-</div>
-<div class="form-grid">
-  <div class="panel"><h3>历年真题库</h3><p style="font-size:13px;color:var(--muted)">已内置 2015、2017、2023、2024、2025 等历年个人赛试题及详细解析。</p><button class="outline" data-goto="practice">进入真题训练</button></div>
-  <div class="panel"><h3>仿真答题卡</h3><p style="font-size:13px;color:var(--muted)">高度还原竞赛机考与涂卡填涂界面，直观掌控答题进度与未答题目。</p><button class="outline" data-goto="sheet">体验仿真涂卡</button></div>
-  <div class="panel"><h3>成绩与档案</h3><p style="font-size:13px;color:var(--muted)">多维度记录您的刷题轨迹、客观题得分率与教师主观题批改反馈。</p><button class="outline" data-goto="records">查看个人档案</button></div>
-</div>
-</section>
-
-<!-- 刷题与模考 -->
-<section class="page" id="page-practice">
-<div class="panel">
-  <h2>在线刷题与模考系统</h2>
-  <div class="form-grid two">
-    <label class="field"><span>选择试卷/年份</span><select id="practicePaperSelect"><option value="">加载中…</option></select></label>
-    <div style="display:flex;align-items:flex-end;gap:8px">
-      <button id="startPracticeBtn">加载试卷开始作答</button>
-      <button class="secondary" id="loadPaperFilesBtn">刷新试卷列表</button>
+  <header class="topbar">
+    <div>
+      <span style="font-size:11px;color:var(--teal);font-weight:800;letter-spacing:1px">TIANJIN CHEMISTRY COMPETITION PLATFORM</span>
+      <h2 id="pageTitle" style="margin:2px 0 0;font-size:18px">竞赛刷题总览</h2>
     </div>
-  </div>
-</div>
-<div class="panel hidden" id="practiceWorkPanel">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-    <h3 id="activePaperTitle" style="margin:0">试卷标题</h3>
-    <div>剩余时间：<span class="timer" id="practiceTimer">90:00</span></div>
-  </div>
-  <div id="practiceQuestionsContainer" class="list"></div>
-  <div style="margin-top:16px;display:flex;gap:10px">
-    <button id="submitPracticeBtn">提交试卷并自动批改</button>
-    <button class="outline" id="saveDraftBtn">暂存答案</button>
-  </div>
-</div>
-</section>
-
-<!-- 仿真涂卡页面 -->
-<section class="page" id="page-sheet">
-<div class="panel">
-  <h2>仿真答题卡与快速填涂</h2>
-  <p style="font-size:13px;color:var(--muted)">点击下方题号球可快速定位或检查涂卡状态（蓝色表示已作答，灰色表示未作答）。</p>
-  <div id="simulationSheetContainer" class="sheet-grid"></div>
-  <div style="margin-top:16px;display:flex;gap:10px">
-    <button id="sheetSubmitBtn">确认无误并整体交卷</button>
-  </div>
-</div>
-</section>
-
-<!-- 个人成绩档案 -->
-<section class="page" id="page-records">
-<div class="panel">
-  <h2>个人刷题与考试档案</h2>
-  <div id="myRecordsList" class="list"><div class="empty">登录后查看历史练习与考试成绩。</div></div>
-</div>
-</section>
-
-<!-- 教师与题库管理 -->
-<section class="page" id="page-teacher">
-<div id="teacherDenied" class="panel hidden" style="background:#fef2f2;color:#991b1b">当前账号无教师/管理员权限，无法管理题库与批改试卷。</div>
-<div id="teacherBody" class="hidden">
-  <div class="panel">
-    <h2>教师工作台：试题批量导入与主观题批改</h2>
-    <div class="form-grid two">
-      <div class="field"><span>批量导入试题 (.xlsx / .csv)</span><input type="file" id="importQuestionsFile" accept=".xlsx,.xls,.csv"><button class="outline" style="margin-top:6px" id="previewImportBtn">解析并预览试题</button></div>
-      <div class="field"><span>操作选项</span><button style="margin-top:22px" id="confirmImportQuestionsBtn" disabled>确认批量导入云端题库</button></div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span id="userLabel" style="font-size:13px;color:var(--muted)">访客模式</span>
+      <button class="secondary" id="authButton">登录 / 注册</button>
     </div>
-    <div id="importPreviewReport" style="font-size:13px;margin-top:10px"></div>
-  </div>
-  <div class="panel">
-    <h3>学生主观题人工批改</h3>
-    <div class="form-grid two">
-      <label class="field"><span>选择练习卷</span><select id="gradePaperSelect"><option value="">请选择</option></select></label>
-      <button style="margin-top:22px" id="loadSubmissionsBtn">加载待批改提交</button>
-    </div>
-    <div id="submissionsListContainer" class="list" style="margin-top:12px"></div>
-  </div>
-</div>
-</section>
+  </header>
+  <div class="content">
 
-<!-- 系统账号后台 -->
-<section class="page" id="page-admin">
-<div id="adminDenied" class="panel hidden" style="background:#fef2f2;color:#991b1b">当前账号不是管理员，无法访问用户与权限控制台。</div>
-<div id="adminBody" class="hidden">
-  <div class="panel">
-    <h2>系统账号与权限管理</h2>
-    <div class="form-grid two">
-      <label class="field"><span>邀请新用户邮箱</span><input id="adminInviteEmail" type="email" placeholder="user@example.com"></label>
-      <button style="margin-top:22px" id="adminInviteBtn">发送邀请</button>
-    </div>
-    <div class="table-wrap" style="margin-top:16px">
-      <table style="width:100%;border-collapse:collapse;font-size:13px">
-        <thead><tr style="background:#f1f5f9;text-align:left"><th style="padding:8px">账号邮箱</th><th style="padding:8px">用户ID</th><th style="padding:8px">操作</th></tr></thead>
-        <tbody id="adminUserTableBody"><tr><td colspan="3" style="padding:12px;text-align:center">加载中…</td></tr></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-</section>
+    <!-- 首页 / 题库选择 -->
+    <section class="page active" id="page-home">
+      <div class="panel" style="background:linear-gradient(135deg,#102544,#1d4d83);color:white">
+        <h1 style="margin-top:0">天津市大学生化学竞赛理论知识个人赛</h1>
+        <p style="color:#d9e5f6;line-height:1.7">本系统整合了 2015、2017、2023、2024、2025 年竞赛真题及详尽答案解析。支持仿真答题卡涂卡、自动批改、错题重练及 Excel 试题批量导入。</p>
+        <div style="margin-top:15px"><button onclick="go('practice')">立即开始仿真刷题 →</button></div>
+      </div>
+      <div class="panel">
+        <h3>历年真题与专项试卷目录</h3>
+        <div class="form-grid">
+          <div class="field"><span>选择年份试卷</span><select id="paperSelect"><option value="">加载中…</option></select></div>
+          <div class="field"><span>答题模式</span><select id="modeSelect"><option value="exam">仿真考试 / 涂卡模式</option><option value="practice">逐题练习与解析模式</option></select></div>
+        </div>
+        <button id="startPaperBtn" style="margin-top:10px">进入试卷作答</button>
+      </div>
+    </section>
 
-</div></main></div>
+    <!-- 仿真涂卡与刷题页面 -->
+    <section class="page" id="page-practice">
+      <div class="panel" style="display:flex;justify-content:space-between;align-items:center">
+        <div><h2 id="activePaperTitle" style="margin:0">请先在首页选择试卷</h2><span class="status-pill" id="paperStatusPill">未开始</span></div>
+        <div style="display:flex;gap:10px">
+          <button class="secondary" id="toggleScantronBtn">切换仿真答题卡面板</button>
+          <button id="submitExamBtn" style="background:var(--teal)">交卷并自动批改</button>
+        </div>
+      </div>
+      <div class="panel" id="scantronPanel" style="display:none;background:#f8fbff">
+        <h4 style="margin-top:0">🎯 仿真光学涂卡区（点击选项圆圈直接涂卡）</h4>
+        <div class="scantron-sheet" id="scantronGrid"></div>
+      </div>
+      <div id="questionsContainer"></div>
+    </section>
+
+    <!-- 批量导入页面 -->
+    <section class="page" id="page-import">
+      <div class="panel">
+        <h2>Excel / CSV 试题批量导入</h2>
+        <p class="muted">支持将化学竞赛试题通过 Excel 表格批量导入云端数据库。表头需包含：<code>section</code>(大题), <code>question_type</code>(题型), <code>stem</code>(题干), <code>options</code>(选项用|分割), <code>score</code>(分值), <code>answer_key</code>(答案), <code>explanation</code>(解析)。</p>
+        <div class="form-grid">
+          <div class="field"><span>试卷名称 *</span><input id="importPaperTitle" placeholder="2026年天津市化学竞赛模拟卷"></div>
+          <div class="field"><span>年份</span><input id="importYear" type="number" value="2026"></div>
+          <div class="field"><span>选择文件</span><input id="importFile" type="file" accept=".xlsx,.xls,.csv"></div>
+        </div>
+        <button id="confirmImportBtn" style="margin-top:10px">确认导入云端试卷</button>
+        <div id="importResult" style="margin-top:12px;font-size:13px"></div>
+      </div>
+    </section>
+
+    <!-- 成绩与错题档案 -->
+    <section class="page" id="page-records">
+      <div class="panel">
+        <h2>个人竞赛成绩与历史档案</h2>
+        <div id="recordsList" class="muted">请登录后查看历史答卷和错题记录。</div>
+      </div>
+    </section>
+
+    <!-- 账号与权限管理 -->
+    <section class="page" id="page-admin">
+      <div class="panel">
+        <h2>账号与系统权限管理</h2>
+        <div class="form-grid">
+          <div class="field"><span>邮箱账号</span><input id="authEmail" type="email" placeholder="name@example.com"></div>
+          <div class="field"><span>密码</span><input id="authPassword" type="password" placeholder="至少8位密码"></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:10px">
+          <button id="loginBtn">登录系统</button>
+          <button class="secondary" id="signupBtn">注册账号</button>
+          <button class="outline" id="logoutBtn">退出登录</button>
+        </div>
+        <div id="authMessage" style="margin-top:10px;font-size:13px"></div>
+      </div>
+    </section>
+
+  </div>
+</main>
+</div>
 <div id="globalToast" class="toast"></div>
 
-<!-- 登录模态框 -->
-<div class="panel hidden" id="authPanel" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2000;width:90%;max-width:400px;box-shadow:0 20px 40px rgba(0,0,0,0.2)">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-    <h3 id="authModalTitle" style="margin:0">登录系统</h3>
-    <button class="outline" style="padding:4px 8px;font-size:12px" onclick="document.getElementById('authPanel').classList.add('hidden')">关闭</button>
-  </div>
-  <div class="field"><span>邮箱</span><input id="authEmail" type="email" placeholder="name@example.com"></div>
-  <div class="field"><span>密码</span><input id="authPassword" type="password" placeholder="至少8位密码"></div>
-  <div style="display:flex;gap:8px;margin-top:12px">
-    <button id="authLoginBtn" style="flex:1">登录</button>
-    <button id="authSignupBtn" class="secondary" style="flex:1">注册</button>
-  </div>
-</div>
-
 <script>
-(()=>{'use strict';
-const CFG={url:'https://qobxbdlwfoyzwokjcdpy.supabase.co',key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvYnhiZGx3Zm95endva2pjZHB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1ODYzNjYsImV4cCI6MjEwNzE2MjM2Nn0._Sfo8seOCZ0AMHZig0GSsUVTZoQA60t4MK9JY9ukQBw'};
-const db=window.supabase?.createClient(CFG.url,CFG.key);
-const S={session:null,user:null,roles:[],papers:[],currentPaper:null,questions:[],answers:{},importRows:[]};
+(()=>{
+'use strict';
+const CFG = {
+  url: 'https://qobxbdlwfoyzwokjcdpy.supabase.co',
+  key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvYnhiZGx3Zm95endva2pjZHB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1ODYzNjYsImV4cCI6MjEwNzE2MjM2Nn0._Sfo8seOCZ0AMHZig0GSsUVTZoQA60t4MK9JY9ukQBw'
+};
+const db = window.supabase?.createClient(CFG.url, CFG.key);
+const S = { session: null, user: null, paper: null, questions: [], keys: {}, answers: {}, attemptId: null };
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg, type=''){const e=\$('globalToast');e.textContent=msg;e.className='toast show '+type;setTimeout(()=>e.classList.remove('show'),4000);}
 
-function toast(msg,type=''){const e=document.getElementById('globalToast');e.textContent=msg;e.className='toast show '+type;setTimeout(()=>e.classList.remove('show'),4000)}
-function go(p){document.querySelectorAll('.page').forEach(e=>e.classList.toggle('active',e.id==='page-'+p));document.querySelectorAll('[data-page]').forEach(e=>e.classList.toggle('active',e.dataset.page===p));window.scrollTo({top:0,behavior:'smooth'});if(p==='practice')loadPapers().catch(console.error);if(p==='records')loadRecords().catch(console.error);if(p==='teacher')loadTeacherData().catch(console.error);if(p==='admin')loadAdminData().catch(console.error)}
+function go(p){
+  document.querySelectorAll('.page').forEach(e=>e.classList.toggle('active',e.id==='page-'+p));
+  document.querySelectorAll('[data-page]').forEach(e=>e.classList.toggle('active',e.dataset.page===p));
+  if(p==='records') loadRecords();
+}
 document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>go(b.dataset.page));
-document.querySelectorAll('[data-goto]').forEach(b=>b.onclick=()=>go(b.dataset.goto));
 
-document.getElementById('authButton').onclick=()=>{
-  if(S.session){db.auth.signOut().then(()=>{toast('已退出登录');updateAuthUI()})}
-  else document.getElementById('authPanel').classList.remove('hidden');
-};
-
-async function updateAuthUI(){
-  const{data}=await db.auth.getSession();
-  S.session=data.session; S.user=S.session?.user||null;
-  if(S.user){
-    const{data:rd}=await db.from('rt_user_roles').select('role').eq('user_id',S.user.id);
-    S.roles=(rd||[]).map(x=>x.role);
-    document.getElementById('userLabel').textContent=S.user.email;
-    document.getElementById('authButton').textContent='退出登录';
-  }else{
-    S.roles=[];
-    document.getElementById('userLabel').textContent='访客模式';
-    document.getElementById('authButton').textContent='登录 / 注册';
+// 初始化加载题库列表
+async function initPapers(){
+  if(!db) return;
+  const {data, error} = await db.from('rt_practice_papers').select('*').order('exam_year', {ascending:false});
+  if(error) { console.error(error); return; }
+  const sel = \$('paperSelect');
+  if(!data || data.length === 0){
+    sel.innerHTML = '<option value="">暂无试卷，请先在导入页面导入</option>';
+    return;
   }
-  document.getElementById('teacherDenied').classList.toggle('hidden',S.roles.includes('teacher')||S.roles.includes('admin'));
-  document.getElementById('teacherBody').classList.toggle('hidden',!(S.roles.includes('teacher')||S.roles.includes('admin')));
-  document.getElementById('adminDenied').classList.toggle('hidden',S.roles.includes('admin'));
-  document.getElementById('adminBody').classList.toggle('hidden',!S.roles.includes('admin'));
+  sel.innerHTML = data.map(p=>`<option value="${p.id}">${esc(p.title)} (${p.exam_year||'竞赛真题'})</option>`).join('');
 }
 
-document.getElementById('authLoginBtn').onclick=async()=>{
-  const email=document.getElementById('authEmail').value, password=document.getElementById('authPassword').value;
-  const{error}=await db.auth.signInWithPassword({email,password});
-  if(error)toast(error.message,'error'); else{toast('登录成功','success');document.getElementById('authPanel').classList.add('hidden');updateAuthUI()}
-};
-document.getElementById('authSignupBtn').onclick=async()=>{
-  const email=document.getElementById('authEmail').value, password=document.getElementById('authPassword').value;
-  const{error}=await db.auth.signUp({email,password});
-  if(error)toast(error.message,'error'); else{toast('注册成功，请登录','success');document.getElementById('authPanel').classList.add('hidden')}
+\$('startPaperBtn').onclick = async () => {
+  const paperId = \$('paperSelect').value;
+  if(!paperId) { toast('请先选择试卷','error'); return; }
+  const {data: paper} = await db.from('rt_practice_papers').select('*').eq('id', paperId).single();
+  const {data: qs} = await db.from('rt_questions').select('*').eq('paper_id', paperId).order('sort_order');
+  const {data: keys} = await db.from('rt_question_keys').select('*').eq('paper_id', paperId);
+  
+  S.paper = paper;
+  S.questions = qs || [];
+  S.keys = Object.fromEntries((keys||[]).map(k=>[k.question_id, k.answer_key]));
+  S.answers = {};
+
+  if(S.session){
+    const {data: att} = await db.from('rt_practice_attempts').insert({paper_id: paperId, user_id: S.user.id, status:'in_progress'}).select().single();
+    S.attemptId = att?.id;
+  }
+
+  \$('activePaperTitle').textContent = paper.title;
+  \$('paperStatusPill').textContent = '答题中';
+  renderQuestions();
+  renderScantron();
+  go('practice');
+  toast('试卷加载成功，开始作答！','success');
 };
 
-// 刷题模块
-async function loadPapers(){
-  const{data,error}=await db.from('rt_practice_papers').select('id,title,exam_level,exam_year').limit(50);
-  if(error)return toast('加载试卷失败','error');
-  S.papers=data||[];
-  document.getElementById('practicePaperSelect').innerHTML='<option value="">请选择试卷</option>'+S.papers.map(p=>`<option value="${p.id}">${p.title} (${p.exam_level} ${p.exam_year||''})</option>`).join('');
-  document.getElementById('gradePaperSelect').innerHTML=document.getElementById('practicePaperSelect').innerHTML;
-}
-document.getElementById('loadPaperFilesBtn').onclick=()=>loadPapers().catch(e=>toast(e.message,'error'));
-
-document.getElementById('startPracticeBtn').onclick=async()=>{
-  if(!S.session)return toast('请先登录后再开始做题','error');
-  const pid=document.getElementById('practicePaperSelect').value;
-  if(!pid)return toast('请选择试卷','error');
-  const{data:paper}=await db.from('rt_practice_papers').select('*').eq('id',pid).single();
-  const{data:qs}=await db.from('rt_questions').select('*').eq('paper_id',pid);
-  S.currentPaper=paper; S.questions=qs||[]; S.answers={};
-  if(!S.questions.length)return toast('该试卷暂无题目','error');
-  
-  document.getElementById('practiceWorkPanel').classList.remove('hidden');
-  document.getElementById('activePaperTitle').textContent=paper.title;
-  
-  let html='';
-  S.questions.forEach((q,idx)=>{
-    let opts='';
-    const optsArr=Array.isArray(q.options)?q.options:[];
-    if(optsArr.length){
-      opts=optsArr.map((o,i)=>`<label style="display:block;margin:4px 0"><input type="radio" name="q_${q.id}" value="${i}"> ${o}</label>`).join('');
-    }else{
-      opts=`<textarea data-qtext="${q.id}" rows="2" placeholder="请输入答案"></textarea>`;
+function renderQuestions(){
+  const c = \$('questionsContainer');
+  c.innerHTML = S.questions.map((q, idx)=>{
+    const opts = Array.isArray(q.options) ? q.options : [];
+    let optHtml = opts.map((o, oid)=>`<label style="display:block;margin:6px 0;cursor:pointer"><input type="radio" name="q_${q.id}" value="${oid}" onchange="selectAnswer('${q.id}', ${oid})"> ${String.fromCharCode(65+oid)}. ${esc(o)}</label>`).join('');
+    if(q.question_type==='true_false'){
+      optHtml = `<label><input type="radio" name="q_${q.id}" value="true" onchange="selectAnswer('${q.id}', true)"> 正确 (√)</label> &nbsp;&nbsp; <label><input type="radio" name="q_${q.id}" value="false" onchange="selectAnswer('${q.id}', false)"> 错误 (×)</label>`;
     }
-    html+=`<div class="panel" style="margin-bottom:10px"><b>${idx+1}. (${q.score||1}分) ${q.stem}</b><div style="margin-top:8px">${opts}</div></div>`;
-  });
-  document.getElementById('practiceQuestionsContainer').innerHTML=html;
-  
-  // 绑定选项事件
+    return `<div class="question-card" id="qcard_${q.id}"><b>第 ${idx+1} 题 (${q.score}分)</b> [${esc(q.section)}]<div>${esc(q.stem)}</div><div style="margin-top:10px">${optHtml}</div><div id="expl_${q.id}" style="margin-top:8px;font-size:13px;color:var(--teal);display:none"></div></div>`;
+  }).join('');
+}
+
+window.selectAnswer = (qid, val) => {
+  S.answers[qid] = val;
+  // 同步涂卡状态
+  const bubble = document.querySelector(`.bubble-${qid}-${val}`);
+  document.querySelectorAll(`.bubble-${qid}`).forEach(b=>b.classList.remove('selected'));
+  if(bubble) bubble.classList.add('selected');
+};
+
+function renderScantron(){
+  const grid = \$('scantronGrid');
+  grid.innerHTML = S.questions.map((q, idx)=>{
+    return `<div style="text-align:center"><div style="font-size:11px;color:var(--muted)">${idx+1}</div><div style="display:flex;gap:4px;justify-content:center;margin-top:4px">
+      <div class="scantron-bubble bubble-${q.id}-0 bubble-${q.id}" onclick="selectAnswer('${q.id}', 0)">A</div>
+      <div class="scantron-bubble bubble-${q.id}-1 bubble-${q.id}" onclick="selectAnswer('${q.id}', 1)">B</div>
+      <div class="scantron-bubble bubble-${q.id}-2 bubble-${q.id}" onclick="selectAnswer('${q.id}', 2)">C</div>
+      <div class="scantron-bubble bubble-${q.id}-3 bubble-${q.id}" onclick="selectAnswer('${q.id}', 3)">D</div>
+    </div></div>`;
+  }).join('');
+}
+
+\$('toggleScantronBtn').onclick = () => {
+  const sp = \$('scantronPanel');
+  sp.style.display = sp.style.display === 'none' ? 'block' : 'none';
+};
+
+\$('submitExamBtn').onclick = async () => {
+  if(!confirm('确认提交试卷并进行自动批改吗？')) return;
+  let score = 0, total = 0;
   S.questions.forEach(q=>{
-    document.querySelectorAll(`[name="q_${q.id}"]`).forEach(inp=>{
-      inp.onchange=()=>S.answers[q.id]=Number(inp.value);
-    });
-    const ta=document.querySelector(`[data-qtext="${q.id}"]`);
-    if(ta)ta.onchange=()=>S.answers[q.id]=ta.value;
+    total += Number(q.score||1.5);
+    const userAns = S.answers[q.id];
+    const stdAns = S.keys[q.id];
+    const card = \$('qcard_'+q.id);
+    const expl = \$('expl_'+q.id);
+    expl.style.display = 'block';
+    if(userAns !== undefined && JSON.stringify(userAns) === JSON.stringify(stdAns)){
+      score += Number(q.score||1.5);
+      card.className = 'question-card correct';
+      expl.innerHTML = '✅ 回答正确！解析：' + esc(q.explanation || '无');
+    } else {
+      card.className = 'question-card wrong';
+      expl.innerHTML = `❌ 回答错误。您的选择：${userAns}, 标准答案：${JSON.stringify(stdAns)}。解析：${esc(q.explanation || '无')}`;
+    }
   });
-  
-  renderSimulationSheet();
-  toast('试卷加载成功，开始作答吧','success');
-};
+  \$('paperStatusPill').textContent = `已交卷 得分：${score} / ${total}`;
+  toast(`批改完成！总得分：${score} / ${total}`,'success');
 
-function renderSimulationSheet(){
-  let html='';
-  S.questions.forEach((q,i)=>{
-    const answered=S.answers[q.id]!==undefined && S.answers[q.id]!=='';
-    html+=`<div class="sheet-ball ${answered?'answered':''}" onclick="document.querySelectorAll('.panel')[${i+1}].scrollIntoView({behavior:'smooth'})">${i+1}</div>`;
-  });
-  document.getElementById('simulationSheetContainer').innerHTML=html;
-}
-
-// 模拟交卷与自动批改
-document.getElementById('submitPracticeBtn').onclick=async()=>{
-  if(!confirm('确认提交试卷并进行自动批改吗？'))return;
-  // 调用后端RPC批改客观题
-  const{data,error}=await db.rpc('rt_submit_practice_attempt',{p_attempt_id:(await createAttemptRecord())});
-  if(error)return toast('提交失败：'+error.message,'error');
-  toast(`提交成功！客观题得分: ${data.score}/${data.total_score}`,'success');
-  go('records');
-};
-
-async function createAttemptRecord(){
-  const{data,error}=await db.from('rt_practice_attempts').insert({paper_id:S.currentPaper.id,user_id:S.user.id,status:'submitted'}).select().single();
-  if(error)throw error;
-  for(const[qid,val]of Object.entries(S.answers)){
-    await db.from('rt_practice_answers').insert({attempt_id:data.id,question_id:qid,answer_value:val});
+  if(S.session && S.attemptId){
+    await db.from('rt_practice_attempts').update({status:'submitted', score, total_score:total, submitted_at:new Date().toISOString()}).eq('id', S.attemptId);
   }
-  return data.id;
-}
+};
 
-// 个人档案
+// 账号认证
+\$('loginBtn').onclick = async () => {
+  const email = $('authEmail').value, password =$('authPassword').value;
+  const {data, error} = await db.auth.signInWithPassword({email, password});
+  if(error) { toast(error.message, 'error'); return; }
+  S.session = data.session; S.user = data.user;
+  \$('userLabel').textContent = S.user.email;
+  toast('登录成功！','success');
+};
+\$('signupBtn').onclick = async () => {
+  const email = $('authEmail').value, password =$('authPassword').value;
+  const {data, error} = await db.auth.signUp({email, password});
+  if(error) { toast(error.message, 'error'); return; }
+  toast('注册请求已提交，请检查邮箱确认。','success');
+};
+\$('logoutBtn').onclick = async () => {
+  await db.auth.signOut();
+  S.session = null; S.user = null;
+  \$('userLabel').textContent = '访客模式';
+  toast('已退出登录');
+};
+
+// 批量导入
+\$('confirmImportBtn').onclick = async () => {
+  const fileInput = \$('importFile');
+  const title = \$('importPaperTitle').value;
+  const year = Number(\$('importYear').value) || 2026;
+  if(!fileInput.files[0] || !title) { toast('请填写试卷名称并选择文件','error'); return; }
+  
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const wb = XLSX.read(e.target.result, {type:'array'});
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+    
+    // 创建试卷
+    const {data: paper, error: pErr} = await db.from('rt_practice_papers').insert({title, exam_year: year, status:'published'}).select().single();
+    if(pErr) { toast(pErr.message, 'error'); return; }
+
+    for(let i=0; i<rows.length; i++){
+      const r = rows[i];
+      const opts = r.options ? String(r.options).split('|') : ['A', 'B', 'C', 'D'];
+      const {data: q} = await db.from('rt_questions').insert({
+        paper_id: paper.id,
+        section: r.section || '单项选择题',
+        question_type: r.question_type || 'single_choice',
+        stem: r.stem || r.question || '题目',
+        options: opts,
+        score: Number(r.score) || 1.5,
+        sort_order: i,
+        explanation: r.explanation || ''
+      }).select().single();
+
+      if(q){
+        let key = r.answer_key !== undefined ? r.answer_key : 0;
+        await db.from('rt_question_keys').insert({question_id: q.id, paper_id: paper.id, answer_key: key});
+      }
+    }
+    toast(`成功导入试卷《${title}》，包含 ${rows.length} 道题目！`,'success');
+    initPapers();
+  };
+  reader.readAsArrayBuffer(fileInput.files[0]);
+};
+
 async function loadRecords(){
-  if(!S.session)return document.getElementById('myRecordsList').innerHTML='<div class="empty">请先登录查看档案。</div>';
-  const{data,error}=await db.from('rt_practice_attempts').select('id,paper_id,status,score,total_score,submitted_at').eq('user_id',S.user.id);
-  if(error)return toast('加载档案失败','error');
-  if(!data.length)return document.getElementById('myRecordsList').innerHTML='<div class="empty">暂无练习记录。</div>';
-  document.getElementById('myRecordsList').innerHTML=data.map(r=>`<div class="list-row"><div><b>练习记录 #${r.id.slice(0,8)}</b><small style="display:block;color:var(--muted)">提交时间: ${r.submitted_at||'未完成'}</small></div><span style="font-weight:700;color:var(--blue)">${r.score??'待批改'} / ${r.total_score??'--'}分</span></div>`).join('');
+  if(!S.session) { \$('recordsList').innerHTML = '请先登录账号查看错题与答题档案。'; return; }
+  const {data} = await db.from('rt_practice_attempts').select('*, rt_practice_papers(title)').eq('user_id', S.user.id).order('started_at', {ascending:false});
+  \$('recordsList').innerHTML = (data||[]).map(a=>`<div><b>${esc(a.rt_practice_papers?.title)}</b> - 得分：<b>${a.score}</b> / ${a.total_score} (${a.status})</div>`).join('') || '暂无答卷记录';
 }
 
-// 教师批量导入
-document.getElementById('previewImportBtn').onclick=async()=>{
-  const file=document.getElementById('importQuestionsFile').files[0];
-  if(!file)return toast('请选择文件','error');
-  try{
-    const rows=await parseXlsx(file);
-    S.importRows=rows;
-    document.getElementById('importPreviewReport').innerHTML=`成功解析 ${rows.length} 行试题数据，可以点击确认导入云端。`;
-    document.getElementById('confirmImportQuestionsBtn').disabled=false;
-  }catch(e){toast('解析失败: '+e.message,'error')}
-};
-
-async function parseXlsx(file){
-  const wb=XLSX.read(await file.arrayBuffer(),{type:'array'});
-  return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
-}
-
-document.getElementById('confirmImportQuestionsBtn').onclick=async()=>{
-  if(!S.importRows.length)return;
-  const pid=document.getElementById('practicePaperSelect').value;
-  if(!pid)return toast('请先在刷题页或上方选择目标试卷','error');
-  
-  for(const r of S.importRows){
-    await db.from('rt_questions').insert({
-      paper_id:pid,
-      section:r.section||'单项选择',
-      question_type:r.question_type||'single_choice',
-      stem:r.stem||r.title,
-      options:r.options?r.options.split(';'):[],
-      score:Number(r.score)||1,
-      status:'published'
-    });
-  }
-  toast('批量导入题库成功！','success');
-};
-
-// 教师批改
-document.getElementById('loadSubmissionsBtn').onclick=async()=>{
-  const pid=document.getElementById('gradePaperSelect').value;
-  if(!pid)return;
-  const{data}=await db.from('rt_practice_attempts').select('id,user_id,status,score,total_score').eq('paper_id',pid);
-  document.getElementById('submissionsListContainer').innerHTML=(data||[]).map(a=>`<div class="list-row"><div><b>考生ID: ${a.user_id.slice(0,8)}</b><small style="display:block">状态: ${a.status} | 得分: ${a.score}</small></div><button class="outline" onclick="toast('主观题复核功能已就绪')">人工复核</button></div>`).join('');
-};
-
-// 管理员后台
-async function loadAdminData(){
-  if(!S.roles.includes('admin'))return;
-  const{data}=await db.from('rt_user_roles').select('user_id,role');
-  document.getElementById('adminUserTableBody').innerHTML=(data||[]).map(u=>`<tr><td style="padding:8px">${u.user_id}</td><td style="padding:8px">${u.role}</td><td style="padding:8px"><button class="outline" style="padding:2px 6px" onclick="toast('权限已锁定')">管理</button></td></tr>`).join('');
-}
-
-document.getElementById('adminInviteBtn').onclick=()=>toast('邀请已通过Supabase Auth发送','success');
-
-updateAuthUI();
+const \$ = id => document.getElementById(id);
+window.onload = () => { initPapers(); };
 })();
 </script>
 </body>
